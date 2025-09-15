@@ -14,6 +14,7 @@ class PCOProduct(Enum):
     GROUPS = "groups"
     CALENDAR = "calendar"
     REGISTRATIONS = "registrations"
+    ORGANIZATION = "organization"
 
 
 @dataclass
@@ -138,13 +139,29 @@ API_ENDPOINTS = {
     PCOProduct.CALENDAR: {
         "base": "calendar/v2",
         "resources": {
+            "attachments": "attachments",
+            "conflicts": "conflicts",
             "events": "events",
+            "event_connections": "event_connections",
             "event_instances": "event_instances",
+            "event_resource_answers": "answers",
+            "event_resource_requests": "event_resource_requests",
             "event_times": "event_times",
-            "event_rsvps": "event_rsvps",
-            "event_notes": "event_notes",
-            "event_labels": "event_labels",
-            "event_attachments": "event_attachments",
+            "feeds": "feeds",
+            "job_statuses": "job_statuses",
+            "organization": "organization",
+            "people": "people",
+            "report_templates": "report_templates",
+            "required_approvals": "required_approvals",
+            "resources": "resources",
+            "resource_approval_groups": "resource_approval_groups",
+            "resource_bookings": "resource_bookings",
+            "resource_folders": "resource_folders",
+            "resource_questions": "resource_questions",
+            "resource_suggestions": "resource_suggestions",
+            "room_setups": "room_setups",
+            "tags": "tags",
+            "tag_groups": "tag_groups",
         },
     },
     PCOProduct.REGISTRATIONS: {
@@ -160,6 +177,19 @@ API_ENDPOINTS = {
             "registration_instances": "registration_instances",
             "registration_instances_people": "registration_instances_people",
             "registration_instances_people_answers": "registration_instances_people_answers",
+            "attendee": "attendee",
+        },
+    },
+    PCOProduct.ORGANIZATION: {
+        "base": "api/v2",
+        "resources": {
+            "connected_applications": "connected_applications",
+            "connected_application_people": "people",
+            "oauth_applications": "oauth_applications",
+            "oauth_application_mau": "mau",
+            "organization": "",
+            "person": "",
+            "personal_access_tokens": "personal_access_tokens",
         },
     },
 }
@@ -249,5 +279,19 @@ WEBHOOK_EVENTS = {
         "registration_instances_people.created",
         "registration_instances_people.updated",
         "registration_instances_people.deleted",
+        "attendee.created",
+        "attendee.updated",
+        "attendee.deleted",
+    ],
+    PCOProduct.ORGANIZATION: [
+        "connected_applications.created",
+        "connected_applications.updated",
+        "connected_applications.deleted",
+        "oauth_applications.created",
+        "oauth_applications.updated",
+        "oauth_applications.deleted",
+        "personal_access_tokens.created",
+        "personal_access_tokens.updated",
+        "personal_access_tokens.deleted",
     ],
 }

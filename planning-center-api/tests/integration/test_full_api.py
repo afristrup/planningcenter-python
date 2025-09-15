@@ -178,6 +178,24 @@ class TestFullAPIIntegration:
         result = await client.get_registrations_by_capacity(min_capacity=10, max_capacity=100)
         assert isinstance(result, PCOCollection)
 
+        # Test get_attendees
+        result = await client.get_attendees(per_page=25)
+        assert isinstance(result, PCOCollection)
+
+        # Test get_attendee
+        client._http_client.get.return_value = PCOResource(**mock_collection_response["data"][0])
+        result = await client.get_attendee("123")
+        assert isinstance(result, PCOResource)
+
+        # Test get_attendees_by_event
+        client._http_client.get.return_value = PCOCollection(**mock_collection_response)
+        result = await client.get_attendees_by_event("event_123")
+        assert isinstance(result, PCOCollection)
+
+        # Test get_checked_in_attendees
+        result = await client.get_checked_in_attendees()
+        assert isinstance(result, PCOCollection)
+
     async def test_generic_crud_operations_all_products(self, client, mock_resource_response):
         """Test generic CRUD operations for all products."""
         client._http_client.get.return_value = PCOResource(**mock_resource_response["data"])

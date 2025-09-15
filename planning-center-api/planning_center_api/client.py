@@ -750,3 +750,335 @@ class PCOClient:
             include=include,
             filter_params=filter_params,
         )
+
+    async def get_attendees(
+        self,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        filter_params: dict[str, Any] | None = None,
+        sort: str | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get attendees from Planning Center Registrations."""
+        result = await self.get(
+            product=PCOProduct.REGISTRATIONS,
+            resource="attendee",
+            per_page=per_page,
+            offset=offset,
+            include=include,
+            filter_params=filter_params,
+            sort=sort,
+            **kwargs,
+        )
+        return result
+
+    async def get_attendee(
+        self,
+        attendee_id: str,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOResource:
+        """Get a specific attendee from Planning Center Registrations."""
+        result = await self.get(
+            product=PCOProduct.REGISTRATIONS,
+            resource="attendee",
+            resource_id=attendee_id,
+            include=include,
+            **kwargs,
+        )
+        return result
+
+    async def get_attendees_by_event(
+        self,
+        event_id: str,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get attendees for a specific event."""
+        filter_params = {"event_id": event_id}
+        result = await self.get(
+            product=PCOProduct.REGISTRATIONS,
+            resource="attendee",
+            per_page=per_page,
+            offset=offset,
+            include=include,
+            filter_params=filter_params,
+            **kwargs,
+        )
+        return result
+
+    async def get_attendees_by_registration_instance(
+        self,
+        registration_instance_id: str,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get attendees for a specific registration instance."""
+        filter_params = {"registration_instance_id": registration_instance_id}
+        result = await self.get(
+            product=PCOProduct.REGISTRATIONS,
+            resource="attendee",
+            per_page=per_page,
+            offset=offset,
+            include=include,
+            filter_params=filter_params,
+            **kwargs,
+        )
+        return result
+
+    async def get_checked_in_attendees(
+        self,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get all checked-in attendees."""
+        filter_params = {"attendance_status": "checked_in"}
+        result = await self.get(
+            product=PCOProduct.REGISTRATIONS,
+            resource="attendee",
+            per_page=per_page,
+            offset=offset,
+            include=include,
+            filter_params=filter_params,
+            **kwargs,
+        )
+        return result
+
+    async def get_checked_out_attendees(
+        self,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get all checked-out attendees."""
+        filter_params = {"attendance_status": "checked_out"}
+        result = await self.get(
+            product=PCOProduct.REGISTRATIONS,
+            resource="attendee",
+            per_page=per_page,
+            offset=offset,
+            include=include,
+            filter_params=filter_params,
+            **kwargs,
+        )
+        return result
+
+    # Organization Methods
+
+    async def get_connected_applications(
+        self,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get all connected applications."""
+        client = self._ensure_client()
+        return await client.get(
+            product="api/v2",
+            endpoint="connected_applications",
+            per_page=per_page,
+            offset=offset,
+            include=include,
+            **kwargs,
+        )
+
+    async def get_connected_application(
+        self,
+        connected_application_id: str,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOResource:
+        """Get a specific connected application."""
+        client = self._ensure_client()
+        return await client.get(
+            product="api/v2",
+            endpoint="connected_applications",
+            resource_id=connected_application_id,
+            include=include,
+            **kwargs,
+        )
+
+    async def get_connected_application_people(
+        self,
+        connected_application_id: str,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get people connected to a specific application."""
+        client = self._ensure_client()
+        return await client.get(
+            product="api/v2",
+            endpoint="people",
+            per_page=per_page,
+            offset=offset,
+            include=include,
+            filter_params={"connected_application": connected_application_id},
+            **kwargs,
+        )
+
+    async def get_connected_application_person(
+        self,
+        connected_application_id: str,
+        person_id: str,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOResource:
+        """Get a specific person connected to an application."""
+        client = self._ensure_client()
+        return await client.get(
+            product="api/v2",
+            endpoint="people",
+            resource_id=person_id,
+            include=include,
+            filter_params={"connected_application": connected_application_id},
+            **kwargs,
+        )
+
+    async def get_oauth_applications(
+        self,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get all OAuth applications."""
+        client = self._ensure_client()
+        return await client.get(
+            product="api/v2",
+            endpoint="oauth_applications",
+            per_page=per_page,
+            offset=offset,
+            include=include,
+            **kwargs,
+        )
+
+    async def get_oauth_application(
+        self,
+        oauth_application_id: str,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOResource:
+        """Get a specific OAuth application."""
+        client = self._ensure_client()
+        return await client.get(
+            product="api/v2",
+            endpoint="oauth_applications",
+            resource_id=oauth_application_id,
+            include=include,
+            **kwargs,
+        )
+
+    async def get_oauth_application_mau(
+        self,
+        oauth_application_id: str,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get monthly active users for a specific OAuth application."""
+        client = self._ensure_client()
+        return await client.get(
+            product="api/v2",
+            endpoint="mau",
+            per_page=per_page,
+            offset=offset,
+            include=include,
+            filter_params={"oauth_application": oauth_application_id},
+            **kwargs,
+        )
+
+    async def get_oauth_application_mau_by_id(
+        self,
+        oauth_application_id: str,
+        mau_id: str,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOResource:
+        """Get a specific monthly active user record for an OAuth application."""
+        client = self._ensure_client()
+        return await client.get(
+            product="api/v2",
+            endpoint="mau",
+            resource_id=mau_id,
+            include=include,
+            filter_params={"oauth_application": oauth_application_id},
+            **kwargs,
+        )
+
+    async def get_organization(
+        self,
+        organization_id: str | None = None,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOResource:
+        """Get organization information."""
+        client = self._ensure_client()
+        return await client.get(
+            product="api/v2",
+            endpoint="",
+            resource_id=organization_id,
+            include=include,
+            **kwargs,
+        )
+
+    async def get_organization_person(
+        self,
+        person_id: str | None = None,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOResource:
+        """Get person information (organization context)."""
+        client = self._ensure_client()
+        return await client.get(
+            product="api/v2",
+            endpoint="",
+            resource_id=person_id,
+            include=include,
+            **kwargs,
+        )
+
+    async def get_personal_access_tokens(
+        self,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get all personal access tokens."""
+        client = self._ensure_client()
+        return await client.get(
+            product="api/v2",
+            endpoint="personal_access_tokens",
+            per_page=per_page,
+            offset=offset,
+            include=include,
+            **kwargs,
+        )
+
+    async def get_personal_access_token(
+        self,
+        token_id: str,
+        include: list[str] | None = None,
+        **kwargs: Any,
+    ) -> PCOResource:
+        """Get a specific personal access token."""
+        client = self._ensure_client()
+        return await client.get(
+            product="api/v2",
+            endpoint="personal_access_tokens",
+            resource_id=token_id,
+            include=include,
+            **kwargs,
+        )

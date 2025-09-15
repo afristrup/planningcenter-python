@@ -507,3 +507,100 @@ class PCORegistrationInstancePersonAnswer(PCOResource):
         if field_data and isinstance(field_data, dict):
             return field_data.get("id")
         return None
+
+
+class PCOAttendee(PCOResource):
+    """Represents an attendee in Planning Center Registrations."""
+
+    def get_first_name(self) -> str | None:
+        """Get the attendee's first name."""
+        return self.get_attribute("first_name")
+
+    def get_last_name(self) -> str | None:
+        """Get the attendee's last name."""
+        return self.get_attribute("last_name")
+
+    def get_full_name(self) -> str:
+        """Get the attendee's full name."""
+        first = self.get_first_name() or ""
+        last = self.get_last_name() or ""
+        return f"{first} {last}".strip()
+
+    def get_email(self) -> str | None:
+        """Get the attendee's email."""
+        return self.get_attribute("email")
+
+    def get_phone(self) -> str | None:
+        """Get the attendee's phone."""
+        return self.get_attribute("phone")
+
+    def get_attendance_status(self) -> str | None:
+        """Get the attendance status."""
+        return self.get_attribute("attendance_status")
+
+    def get_check_in_time(self) -> datetime | None:
+        """Get the check-in time."""
+        check_in_time = self.get_attribute("check_in_time")
+        if check_in_time:
+            return datetime.fromisoformat(check_in_time.replace("Z", "+00:00"))
+        return None
+
+    def get_check_out_time(self) -> datetime | None:
+        """Get the check-out time."""
+        check_out_time = self.get_attribute("check_out_time")
+        if check_out_time:
+            return datetime.fromisoformat(check_out_time.replace("Z", "+00:00"))
+        return None
+
+    def get_created_at(self) -> datetime | None:
+        """Get the attendee creation time."""
+        created_at = self.get_attribute("created_at")
+        if created_at:
+            return datetime.fromisoformat(created_at.replace("Z", "+00:00"))
+        return None
+
+    def get_updated_at(self) -> datetime | None:
+        """Get the attendee last update time."""
+        updated_at = self.get_attribute("updated_at")
+        if updated_at:
+            return datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
+        return None
+
+    def get_event_id(self) -> str | None:
+        """Get the event ID."""
+        event_data = self.get_relationship_data("event")
+        if event_data and isinstance(event_data, dict):
+            return event_data.get("id")
+        return None
+
+    def get_registration_instance_id(self) -> str | None:
+        """Get the registration instance ID."""
+        reg_instance_data = self.get_relationship_data("registration_instance")
+        if reg_instance_data and isinstance(reg_instance_data, dict):
+            return reg_instance_data.get("id")
+        return None
+
+    def get_person_id(self) -> str | None:
+        """Get the person ID."""
+        person_data = self.get_relationship_data("person")
+        if person_data and isinstance(person_data, dict):
+            return person_data.get("id")
+        return None
+
+    def is_checked_in(self) -> bool:
+        """Check if the attendee is checked in."""
+        return self.get_attendance_status() == "checked_in"
+
+    def is_checked_out(self) -> bool:
+        """Check if the attendee is checked out."""
+        return self.get_attendance_status() == "checked_out"
+
+    def get_attendance_duration(self) -> int | None:
+        """Get the attendance duration in minutes."""
+        check_in = self.get_check_in_time()
+        check_out = self.get_check_out_time()
+
+        if check_in and check_out:
+            duration = check_out - check_in
+            return int(duration.total_seconds() / 60)
+        return None

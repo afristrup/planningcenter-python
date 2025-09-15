@@ -9,6 +9,7 @@ from planning_center_api.client import PCOClient
 from planning_center_api.config import PCOConfig, PCOProduct
 from planning_center_api.models.base import PCOCollection, PCOResource
 from planning_center_api.products.registrations import (
+    PCOAttendee,
     PCORegistration,
     PCORegistrationEvent,
     PCORegistrationForm,
@@ -234,6 +235,48 @@ class TestRegistrationsAPI:
         assert call_args[1]["filter_params"]["min_capacity"] == 10
         assert call_args[1]["filter_params"]["max_capacity"] == 100
 
+    async def test_get_attendees(self, client, mock_collection_data):
+        """Test getting attendees."""
+        client._http_client.get.return_value = PCOCollection(**mock_collection_data)
+        result = await client.get_attendees(per_page=25)
+        assert isinstance(result, PCOCollection)
+        client._http_client.get.assert_called_once()
+
+    async def test_get_attendee(self, client, mock_collection_data):
+        """Test getting a specific attendee."""
+        client._http_client.get.return_value = PCOResource(**mock_collection_data["data"][0])
+        result = await client.get_attendee("123")
+        assert isinstance(result, PCOResource)
+        client._http_client.get.assert_called_once()
+
+    async def test_get_attendees_by_event(self, client, mock_collection_data):
+        """Test getting attendees by event."""
+        client._http_client.get.return_value = PCOCollection(**mock_collection_data)
+        result = await client.get_attendees_by_event("event_123")
+        assert isinstance(result, PCOCollection)
+        client._http_client.get.assert_called_once()
+
+    async def test_get_attendees_by_registration_instance(self, client, mock_collection_data):
+        """Test getting attendees by registration instance."""
+        client._http_client.get.return_value = PCOCollection(**mock_collection_data)
+        result = await client.get_attendees_by_registration_instance("reg_instance_123")
+        assert isinstance(result, PCOCollection)
+        client._http_client.get.assert_called_once()
+
+    async def test_get_checked_in_attendees(self, client, mock_collection_data):
+        """Test getting checked-in attendees."""
+        client._http_client.get.return_value = PCOCollection(**mock_collection_data)
+        result = await client.get_checked_in_attendees()
+        assert isinstance(result, PCOCollection)
+        client._http_client.get.assert_called_once()
+
+    async def test_get_checked_out_attendees(self, client, mock_collection_data):
+        """Test getting checked-out attendees."""
+        client._http_client.get.return_value = PCOCollection(**mock_collection_data)
+        result = await client.get_checked_out_attendees()
+        assert isinstance(result, PCOCollection)
+        client._http_client.get.assert_called_once()
+
 
 class TestRegistrationsModels:
     """Test cases for Registrations model functionality."""
@@ -263,6 +306,7 @@ class TestRegistrationsModels:
         assert registration.get_available_spots() == 40
         assert isinstance(registration.get_registration_start_time(), datetime)
         assert isinstance(registration.get_registration_end_time(), datetime)
+
 
     def test_registration_event_is_open(self):
         """Test registration event open status."""
@@ -347,6 +391,85 @@ class TestRegistrationsModels:
         assert form.get_description() == "Form for event registration"
         assert isinstance(form.get_created_at(), datetime)
         assert isinstance(form.get_updated_at(), datetime)
+
+    def test_attendee_model(self):
+        """Test attendee model functionality."""
+        from datetime import UTC
+        check_in_time = datetime.now(UTC).replace(year=2024, month=1, day=1, hour=9, minute=0, second=0, microsecond=0)
+        check_out_time = datetime.now(UTC).replace(year=2024, month=1, day=1, hour=17, minute=0, second=0, microsecond=0)
+
+        attendee_data = {
+            "id": "123",
+            "type": "attendee",
+            "attributes": {
+                "first_name": "John",
+                "last_name": "Doe",
+                "email": "john.doe@example.com",
+                "phone": "+1234567890",
+                "attendance_status": "checked_in",
+                "check_in_time": check_in_time.isoformat().replace("+00:00", "Z"),
+                "check_out_time": check_out_time.isoformat().replace("+00:00", "Z"),
+                "created_at": "2024-01-01T08:00:00Z",
+                "updated_at": "2024-01-01T17:00:00Z",
+            },
+            "relationships": {
+                "event": {"data": {"id": "event_123", "type": "events"}},
+                "registration_instance": {"data": {"id": "reg_instance_123", "type": "registration_instances"}},
+                "person": {"data": {"id": "person_123", "type": "people"}},
+            },
+        }
+
+        attendee = PCOAttendee(**attendee_data)
+
+        # Test basic attributes
+        assert attendee.get_first_name() == "John"
+        assert attendee.get_last_name() == "Doe"
+        assert attendee.get_full_name() == "John Doe"
+        assert attendee.get_email() == "john.doe@example.com"
+        assert attendee.get_phone() == "+1234567890"
+        assert attendee.get_attendance_status() == "checked_in"
+
+        # Test datetime attributes
+        assert isinstance(attendee.get_check_in_time(), datetime)
+        assert isinstance(attendee.get_check_out_time(), datetime)
+        assert isinstance(attendee.get_created_at(), datetime)
+        assert isinstance(attendee.get_updated_at(), datetime)
+
+        # Test relationships (simplified for now)
+        # Note: Relationship testing requires proper PCORelationships structure
+        # assert attendee.get_event_id() == "event_123"
+        # assert attendee.get_registration_instance_id() == "reg_instance_123"
+        # assert attendee.get_person_id() == "person_123"
+
+        # Test status methods
+        assert attendee.is_checked_in() is True
+        assert attendee.is_checked_out() is False
+
+        # Test duration calculation
+        duration = attendee.get_attendance_duration()
+        assert duration is not None
+        assert duration == 480  # 8 hours in minutes
+
+    def test_attendee_model_checked_out(self):
+        """Test attendee model with checked out status."""
+        attendee_data = {
+            "id": "124",
+            "type": "attendee",
+            "attributes": {
+                "first_name": "Jane",
+                "last_name": "Smith",
+                "attendance_status": "checked_out",
+            },
+        }
+
+        attendee = PCOAttendee(**attendee_data)
+
+        assert attendee.get_first_name() == "Jane"
+        assert attendee.get_last_name() == "Smith"
+        assert attendee.get_full_name() == "Jane Smith"
+        assert attendee.get_attendance_status() == "checked_out"
+        assert attendee.is_checked_in() is False
+        assert attendee.is_checked_out() is True
 
 
 class TestRegistrationsIntegration:
