@@ -482,3 +482,271 @@ class PCOClient:
             include=include,
             filter_params={"status": "inactive"},
         )
+
+    # Registrations-specific convenience methods
+
+    async def get_registration_events(
+        self,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        filter_params: dict[str, Any] | None = None,
+        sort: str | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get registration events from Planning Center Registrations."""
+        result = await self.get(
+            product=PCOProduct.REGISTRATIONS,
+            resource="events",
+            per_page=per_page,
+            offset=offset,
+            include=include,
+            filter_params=filter_params,
+            sort=sort,
+            **kwargs,
+        )
+        return result
+
+    async def get_registration_event(
+        self,
+        event_id: str,
+        include: list[str] | None = None,
+    ) -> PCOResource:
+        """Get a specific registration event from Planning Center Registrations."""
+        return await self.get(
+            product=PCOProduct.REGISTRATIONS,
+            resource="events",
+            resource_id=event_id,
+            include=include,
+        )
+
+    async def get_registrations(
+        self,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        filter_params: dict[str, Any] | None = None,
+        sort: str | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get registrations from Planning Center Registrations."""
+        result = await self.get(
+            product=PCOProduct.REGISTRATIONS,
+            resource="registrations",
+            per_page=per_page,
+            offset=offset,
+            include=include,
+            filter_params=filter_params,
+            sort=sort,
+            **kwargs,
+        )
+        return result
+
+    async def get_registration(
+        self,
+        registration_id: str,
+        include: list[str] | None = None,
+    ) -> PCOResource:
+        """Get a specific registration from Planning Center Registrations."""
+        return await self.get(
+            product=PCOProduct.REGISTRATIONS,
+            resource="registrations",
+            resource_id=registration_id,
+            include=include,
+        )
+
+    async def get_registration_instances(
+        self,
+        registration_id: str | None = None,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        filter_params: dict[str, Any] | None = None,
+        sort: str | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get registration instances from Planning Center Registrations."""
+        if registration_id:
+            # Get instances for a specific registration
+            result = await self.get(
+                product=PCOProduct.REGISTRATIONS,
+                resource="registration_instances",
+                per_page=per_page,
+                offset=offset,
+                include=include,
+                filter_params={**(filter_params or {}), "registration": registration_id},
+                sort=sort,
+                **kwargs,
+            )
+        else:
+            # Get all instances
+            result = await self.get(
+                product=PCOProduct.REGISTRATIONS,
+                resource="registration_instances",
+                per_page=per_page,
+                offset=offset,
+                include=include,
+                filter_params=filter_params,
+                sort=sort,
+                **kwargs,
+            )
+        return result
+
+    async def get_registration_instance(
+        self,
+        instance_id: str,
+        include: list[str] | None = None,
+    ) -> PCOResource:
+        """Get a specific registration instance from Planning Center Registrations."""
+        return await self.get(
+            product=PCOProduct.REGISTRATIONS,
+            resource="registration_instances",
+            resource_id=instance_id,
+            include=include,
+        )
+
+    async def get_registration_forms(
+        self,
+        registration_id: str | None = None,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        filter_params: dict[str, Any] | None = None,
+        sort: str | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get registration forms from Planning Center Registrations."""
+        if registration_id:
+            # Get forms for a specific registration
+            result = await self.get(
+                product=PCOProduct.REGISTRATIONS,
+                resource="registration_forms",
+                per_page=per_page,
+                offset=offset,
+                include=include,
+                filter_params={**(filter_params or {}), "registration": registration_id},
+                sort=sort,
+                **kwargs,
+            )
+        else:
+            # Get all forms
+            result = await self.get(
+                product=PCOProduct.REGISTRATIONS,
+                resource="registration_forms",
+                per_page=per_page,
+                offset=offset,
+                include=include,
+                filter_params=filter_params,
+                sort=sort,
+                **kwargs,
+            )
+        return result
+
+    async def get_registration_form(
+        self,
+        form_id: str,
+        include: list[str] | None = None,
+    ) -> PCOResource:
+        """Get a specific registration form from Planning Center Registrations."""
+        return await self.get(
+            product=PCOProduct.REGISTRATIONS,
+            resource="registration_forms",
+            resource_id=form_id,
+            include=include,
+        )
+
+    async def get_registration_instance_people(
+        self,
+        instance_id: str | None = None,
+        per_page: int | None = None,
+        offset: int | None = None,
+        include: list[str] | None = None,
+        filter_params: dict[str, Any] | None = None,
+        sort: str | None = None,
+        **kwargs: Any,
+    ) -> PCOCollection:
+        """Get people registered for registration instances."""
+        if instance_id:
+            # Get people for a specific instance
+            result = await self.get(
+                product=PCOProduct.REGISTRATIONS,
+                resource="registration_instances_people",
+                per_page=per_page,
+                offset=offset,
+                include=include,
+                filter_params={**(filter_params or {}), "registration_instance": instance_id},
+                sort=sort,
+                **kwargs,
+            )
+        else:
+            # Get all registered people
+            result = await self.get(
+                product=PCOProduct.REGISTRATIONS,
+                resource="registration_instances_people",
+                per_page=per_page,
+                offset=offset,
+                include=include,
+                filter_params=filter_params,
+                sort=sort,
+                **kwargs,
+            )
+        return result
+
+    async def get_registration_instance_person(
+        self,
+        person_id: str,
+        include: list[str] | None = None,
+    ) -> PCOResource:
+        """Get a specific registered person from Planning Center Registrations."""
+        return await self.get(
+            product=PCOProduct.REGISTRATIONS,
+            resource="registration_instances_people",
+            resource_id=person_id,
+            include=include,
+        )
+
+    # Utility methods for registrations
+
+    async def get_open_registrations(
+        self,
+        per_page: int | None = None,
+        include: list[str] | None = None,
+    ) -> PCOCollection:
+        """Get registrations that are currently open."""
+        return await self.get_registrations(
+            per_page=per_page,
+            include=include,
+            filter_params={"status": "open"},
+        )
+
+    async def get_closed_registrations(
+        self,
+        per_page: int | None = None,
+        include: list[str] | None = None,
+    ) -> PCOCollection:
+        """Get registrations that are currently closed."""
+        return await self.get_registrations(
+            per_page=per_page,
+            include=include,
+            filter_params={"status": "closed"},
+        )
+
+    async def get_registrations_by_capacity(
+        self,
+        min_capacity: int | None = None,
+        max_capacity: int | None = None,
+        per_page: int | None = None,
+        include: list[str] | None = None,
+    ) -> PCOCollection:
+        """Get registrations filtered by capacity."""
+        filter_params = {}
+        if min_capacity is not None:
+            filter_params["min_capacity"] = min_capacity
+        if max_capacity is not None:
+            filter_params["max_capacity"] = max_capacity
+
+        return await self.get_registrations(
+            per_page=per_page,
+            include=include,
+            filter_params=filter_params,
+        )

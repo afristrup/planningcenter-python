@@ -39,7 +39,7 @@ class PCOHttpClient:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Async context manager exit."""
         if self._client:
-            await self._client.acquire()
+            await self._client.aclose()
             self._client = None
 
     async def _make_request(

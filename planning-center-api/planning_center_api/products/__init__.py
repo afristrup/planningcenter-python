@@ -47,6 +47,18 @@ from .people import (
     PCOWorkflow,
     PCOWorkflowStep,
 )
+from .registrations import (
+    PCORegistration,
+    PCORegistrationEvent,
+    PCORegistrationEventInstance,
+    PCORegistrationEventTime,
+    PCORegistrationForm,
+    PCORegistrationFormField,
+    PCORegistrationFormFieldOption,
+    PCORegistrationInstance,
+    PCORegistrationInstancePerson,
+    PCORegistrationInstancePersonAnswer,
+)
 from .services import (
     PCOArrangement,
     PCOAttachment,
@@ -120,4 +132,15 @@ __all__ = [
     "PCOEventNote",
     "PCOEventLabel",
     "PCOEventAttachment",
+    # Registrations
+    "PCORegistrationEvent",
+    "PCORegistrationEventInstance",
+    "PCORegistrationEventTime",
+    "PCORegistration",
+    "PCORegistrationForm",
+    "PCORegistrationFormField",
+    "PCORegistrationFormFieldOption",
+    "PCORegistrationInstance",
+    "PCORegistrationInstancePerson",
+    "PCORegistrationInstancePersonAnswer",
 ]

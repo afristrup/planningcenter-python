@@ -13,6 +13,7 @@ class PCOProduct(Enum):
     GIVING = "giving"
     GROUPS = "groups"
     CALENDAR = "calendar"
+    REGISTRATIONS = "registrations"
 
 
 @dataclass
@@ -146,6 +147,21 @@ API_ENDPOINTS = {
             "event_attachments": "event_attachments",
         },
     },
+    PCOProduct.REGISTRATIONS: {
+        "base": "registrations/v2",
+        "resources": {
+            "events": "events",
+            "event_instances": "event_instances",
+            "event_times": "event_times",
+            "registrations": "registrations",
+            "registration_forms": "registration_forms",
+            "registration_form_fields": "registration_form_fields",
+            "registration_form_field_options": "registration_form_field_options",
+            "registration_instances": "registration_instances",
+            "registration_instances_people": "registration_instances_people",
+            "registration_instances_people_answers": "registration_instances_people_answers",
+        },
+    },
 }
 
 # HTTP Status Codes
@@ -219,5 +235,19 @@ WEBHOOK_EVENTS = {
         "event_instances.created",
         "event_instances.updated",
         "event_instances.deleted",
+    ],
+    PCOProduct.REGISTRATIONS: [
+        "events.created",
+        "events.updated",
+        "events.deleted",
+        "registrations.created",
+        "registrations.updated",
+        "registrations.deleted",
+        "registration_instances.created",
+        "registration_instances.updated",
+        "registration_instances.deleted",
+        "registration_instances_people.created",
+        "registration_instances_people.updated",
+        "registration_instances_people.deleted",
     ],
 }
