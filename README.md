@@ -220,59 +220,111 @@ pco-cli find-by-email --email "john@example.com"
 
 ## 🤖 MCP Server for AI Assistants
 
-The repository includes a Model Context Protocol (MCP) server that exposes Planning Center data as tools for AI assistants like Claude, Cursor, and other MCP-compatible clients.
+The repository includes a comprehensive Model Context Protocol (MCP) server that exposes **all major Planning Center APIs** as tools for AI assistants like Claude, Cursor, and other MCP-compatible clients.
 
-### Features
+### 🚀 Features
 
-- **FastAPI-native** using [FastAPI-MCP](https://github.com/tadata-org/fastapi_mcp)
+- **Comprehensive Coverage**: 65+ read-only tools across 9 Planning Center products
+- **Native MCP Integration**: Built using the official MCP protocol for seamless AI assistant integration
 - **Read-only operations** for data safety
-- **Auto-generated MCP tools** from FastAPI endpoints
-- **Swagger documentation** at `/docs`
-- **Comprehensive filtering** and pagination support
+- **Mock server included** for testing without API credentials
+- **Claude Desktop ready** with pre-configured setup
+- **Advanced filtering** and pagination support
+- **Event attendee filtering** for enhanced event management
 
-### Quick Start
+### 📋 Available MCP Tools (65+ tools)
+
+#### **People API** (15 tools)
+- `get_people`, `get_person`, `get_person_addresses`, `get_person_emails`, `get_person_phones`, `get_person_background_checks`, `get_field_definitions`, `get_forms`, `get_form`, `get_campuses`, `get_campus`
+
+#### **Services API** (12 tools)
+- `get_services`, `get_service`, `get_plans`, `get_plan`, `get_songs`, `get_song`, `get_arrangements`, `get_arrangement`, `get_keys`, `get_key`, `get_teams`, `get_team`, `get_team_positions`, `get_team_position`
+
+#### **Registrations API** (5 tools)
+- `get_registrations`, `get_registration`, `get_attendees`, `get_attendee`, `get_event_attendees`
+
+#### **Giving API** (10 tools)
+- `get_donations`, `get_donation`, `get_funds`, `get_fund`, `get_batches`, `get_batch`, `get_pledges`, `get_pledge`, `get_pledge_campaigns`, `get_pledge_campaign`, `get_recurring_donations`, `get_recurring_donation`
+
+#### **Groups API** (8 tools)
+- `get_groups`, `get_group`, `get_group_events`, `get_group_event`, `get_group_memberships`, `get_group_membership`, `get_group_types`, `get_group_type`
+
+#### **Calendar API** (2 tools)
+- `get_calendar_events`, `get_calendar_event`
+
+#### **Check-ins API** (4 tools)
+- `get_check_in_events`, `get_check_in_event`, `get_locations`, `get_location`
+
+#### **Publishing API** (4 tools)
+- `get_channels`, `get_channel`, `get_episodes`, `get_episode`
+
+#### **Webhooks API** (2 tools)
+- `get_webhook_subscriptions`, `get_webhook_subscription`
+
+#### **Organization API** (4 tools)
+- `get_connected_applications`, `get_connected_application`, `get_oauth_applications`, `get_oauth_application`
+
+### 🚀 Quick Start
+
+#### **Option 1: Mock Server (No Credentials Required)**
+Perfect for testing and development:
 
 ```bash
 # Navigate to MCP server directory
 cd planning-center-mcp-server
 
+# Run the mock server
+uv run python mcp_mock_server_comprehensive.py
+
+# Or use the batch file
+run_comprehensive_server.bat
+```
+
+#### **Option 2: Real Server (Requires API Credentials)**
+For production use with real Planning Center data:
+
+```bash
 # Set up environment variables
 cp env.example .env
 # Edit .env with your Planning Center API credentials
 
-# Run the server
-uv run python run_server.py
+# Run the real server
+uv run python mcp_server_fixed.py
+
+# Or use the batch file
+run_real_server.bat
 ```
 
-### Available MCP Tools
+### 🤖 Claude Desktop Integration
 
-The server provides these read-only tools:
+The servers are pre-configured for Claude Desktop integration:
 
-- `get_people` - Get people with filtering (search, status, email, phone)
-- `get_person` - Get specific person details
-- `get_services` - Get all services
-- `get_service` - Get specific service details
-- `get_plans` - Get plans (optionally by service)
-- `get_plan` - Get specific plan details
-- `get_registrations` - Get registrations with filtering
-- `get_registration` - Get specific registration details
-- `get_attendees` - Get attendees with filtering
-- `get_attendee` - Get specific attendee details
+1. **Edit your Claude Desktop config**: `%APPDATA%\Claude\claude_desktop_config.json`
+2. **Add server configuration** (already done if you followed the setup)
+3. **Restart Claude Desktop**
+4. **Start asking questions** about Planning Center data!
 
-### MCP Client Configuration
+#### **Available in Claude Desktop**
+- **Mock Server**: `planning-center-mock` (no credentials needed)
+- **Real Server**: `planning-center-api` (requires API credentials)
 
-Configure your MCP client to connect to:
-- **MCP Endpoint**: `http://localhost:8000/mcp`
-- **API Documentation**: `http://localhost:8000/docs`
+### 💡 Usage Examples
 
-### Example Usage
+Once configured, you can ask Claude questions like:
 
-```bash
-# Test the API directly
-curl -X POST "http://localhost:8000/get_people" \
-  -H "Content-Type: application/json" \
-  -d '{"per_page": 5, "search": "john"}'
-```
+- *"Show me all active people in our database"*
+- *"Get the attendees for Summer Camp 2024"*
+- *"Find all donations from last month"*
+- *"List all groups and their members"*
+- *"Show me upcoming calendar events"*
+
+### 🎭 Mock Server Features
+
+- **14+ tools** covering the most commonly used endpoints
+- **Realistic fake data** with proper relationships between entities
+- **No authentication required** for testing
+- **Same API structure** as the real server
+- **MCP integration** for AI assistant testing
 
 For detailed MCP server documentation, see [planning-center-mcp-server/README.md](planning-center-mcp-server/README.md).
 
@@ -415,9 +467,15 @@ planningcenter-wrapper/
 │   ├── tests/                    # Test suite
 │   ├── docs/                     # Documentation
 │   └── pyproject.toml           # Package configuration
-├── planning-center-mcp-server/   # MCP server for AI assistants
+├── planning-center-mcp-server/   # Comprehensive MCP server for AI assistants
 │   ├── planning_center_mcp/      # MCP server source code
-│   ├── README.md                 # MCP server documentation
+│   ├── mcp_server_fixed.py      # Real server with 65+ tools
+│   ├── mcp_mock_server_comprehensive.py  # Mock server for testing
+│   ├── run_real_server.bat      # Batch file for real server
+│   ├── run_comprehensive_server.bat  # Batch file for mock server
+│   ├── README.md                 # Comprehensive MCP server documentation
+│   ├── COMPREHENSIVE_API_COVERAGE.md  # Complete API coverage documentation
+│   ├── CLAUDE_DESKTOP_SETUP.md  # Claude Desktop setup guide
 │   ├── QUICKSTART.md            # Quick start guide
 │   └── pyproject.toml           # MCP server configuration
 ├── _apis/                        # API documentation
@@ -440,7 +498,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Check the [examples](planning-center-api/examples/) directory
 - Review the [API documentation](https://developer.planning.center/docs/)
-- For MCP server help, see [planning-center-mcp-server/README.md](planning-center-mcp-server/README.md)
+- **MCP Server Documentation**:
+  - [Comprehensive MCP Server README](planning-center-mcp-server/README.md)
+  - [Complete API Coverage Guide](planning-center-mcp-server/COMPREHENSIVE_API_COVERAGE.md)
+  - [Claude Desktop Setup Guide](planning-center-mcp-server/CLAUDE_DESKTOP_SETUP.md)
+  - [Quick Start Guide](planning-center-mcp-server/QUICKSTART.md)
 - Open an issue for bugs or feature requests
 
 ## 🔗 Links
