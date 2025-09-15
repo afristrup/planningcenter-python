@@ -13,8 +13,11 @@ A comprehensive, modern Python wrapper for the Planning Center API using Pydanti
 - **Comprehensive error handling** with specific exception types
 - **CLI tools** for common operations
 - **Utility functions** for data processing and analysis
+- **MCP Server** for AI assistant integration using FastAPI-MCP
 
 ## 📦 Installation
+
+### Core API Package
 
 ```bash
 # Install with uv (recommended)
@@ -23,6 +26,20 @@ uv pip install "planning_center_api@."
 
 # Or with pip
 cd planning-center-api
+pip install .
+```
+
+### MCP Server (Optional)
+
+For AI assistant integration:
+
+```bash
+# Install MCP server
+cd planning-center-mcp-server
+uv pip install "planning_center_mcp@."
+
+# Or with pip
+cd planning-center-mcp-server
 pip install .
 ```
 
@@ -201,6 +218,64 @@ pco-cli paginate --product services --resource services --output csv
 pco-cli find-by-email --email "john@example.com"
 ```
 
+## 🤖 MCP Server for AI Assistants
+
+The repository includes a Model Context Protocol (MCP) server that exposes Planning Center data as tools for AI assistants like Claude, Cursor, and other MCP-compatible clients.
+
+### Features
+
+- **FastAPI-native** using [FastAPI-MCP](https://github.com/tadata-org/fastapi_mcp)
+- **Read-only operations** for data safety
+- **Auto-generated MCP tools** from FastAPI endpoints
+- **Swagger documentation** at `/docs`
+- **Comprehensive filtering** and pagination support
+
+### Quick Start
+
+```bash
+# Navigate to MCP server directory
+cd planning-center-mcp-server
+
+# Set up environment variables
+cp env.example .env
+# Edit .env with your Planning Center API credentials
+
+# Run the server
+uv run python run_server.py
+```
+
+### Available MCP Tools
+
+The server provides these read-only tools:
+
+- `get_people` - Get people with filtering (search, status, email, phone)
+- `get_person` - Get specific person details
+- `get_services` - Get all services
+- `get_service` - Get specific service details
+- `get_plans` - Get plans (optionally by service)
+- `get_plan` - Get specific plan details
+- `get_registrations` - Get registrations with filtering
+- `get_registration` - Get specific registration details
+- `get_attendees` - Get attendees with filtering
+- `get_attendee` - Get specific attendee details
+
+### MCP Client Configuration
+
+Configure your MCP client to connect to:
+- **MCP Endpoint**: `http://localhost:8000/mcp`
+- **API Documentation**: `http://localhost:8000/docs`
+
+### Example Usage
+
+```bash
+# Test the API directly
+curl -X POST "http://localhost:8000/get_people" \
+  -H "Content-Type: application/json" \
+  -d '{"per_page": 5, "search": "john"}'
+```
+
+For detailed MCP server documentation, see [planning-center-mcp-server/README.md](planning-center-mcp-server/README.md).
+
 ### CLI Configuration
 
 Set environment variables or use a config file:
@@ -333,13 +408,19 @@ uv run pytest
 ### Project Structure
 
 ```
-planningcenter-python/
-├── planning-center-api/          # Main package
+planningcenter-wrapper/
+├── planning-center-api/          # Core API package
 │   ├── planning_center_api/      # Source code
 │   ├── examples/                 # Usage examples
 │   ├── tests/                    # Test suite
 │   ├── docs/                     # Documentation
 │   └── pyproject.toml           # Package configuration
+├── planning-center-mcp-server/   # MCP server for AI assistants
+│   ├── planning_center_mcp/      # MCP server source code
+│   ├── README.md                 # MCP server documentation
+│   ├── QUICKSTART.md            # Quick start guide
+│   └── pyproject.toml           # MCP server configuration
+├── _apis/                        # API documentation
 └── README.md                     # This file
 ```
 
@@ -359,6 +440,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Check the [examples](planning-center-api/examples/) directory
 - Review the [API documentation](https://developer.planning.center/docs/)
+- For MCP server help, see [planning-center-mcp-server/README.md](planning-center-mcp-server/README.md)
 - Open an issue for bugs or feature requests
 
 ## 🔗 Links
@@ -366,3 +448,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [Planning Center API Documentation](https://developer.planning.center/docs/)
 - [Pydantic Documentation](https://pydantic-docs.helpmanual.io/)
 - [httpx Documentation](https://www.python-httpx.org/)
+- [FastAPI-MCP Documentation](https://github.com/tadata-org/fastapi_mcp)

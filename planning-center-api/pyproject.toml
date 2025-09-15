@@ -14,6 +14,9 @@ dependencies = [
 [project.scripts]
 pco-cli = "planning_center_api.cli:cli"
 
+[tool.hatch.build.targets.wheel]
+packages = ["planning_center_api"]
+
 [project.optional-dependencies]
 examples = [
     "fastapi>=0.116.1",
