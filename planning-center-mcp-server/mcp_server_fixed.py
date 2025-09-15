@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""MCP server entry point for Planning Center API."""
+"""Fixed MCP server entry point for Planning Center API."""
 
 import asyncio
 import logging
@@ -9,16 +9,17 @@ from typing import Any, Dict, List, Optional
 from mcp.server import Server
 from mcp.server.models import InitializationOptions
 from mcp.server.stdio import stdio_server
-from mcp.types import (
-    Tool,
-    TextContent,
-)
+from mcp.types import Tool, TextContent
 
 from planning_center_mcp.config import PCOConfig
 from planning_center_mcp.client import PCOClient
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
+# Set up logging to stderr so it appears in Claude Desktop logs
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    stream=sys.stderr,
+)
 logger = logging.getLogger(__name__)
 
 # Global variables
@@ -42,6 +43,7 @@ def get_pco_client() -> PCOClient:
 @server.list_tools()
 async def list_tools() -> List[Tool]:
     """List available tools."""
+    logger.info("Listing tools")
     return [
         Tool(
             name="get_people",
@@ -297,6 +299,8 @@ async def list_tools() -> List[Tool]:
 @server.call_tool()
 async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
     """Handle tool calls."""
+    logger.info(f"Calling tool: {name} with arguments: {arguments}")
+
     try:
         pco_client = get_pco_client()
 
@@ -415,10 +419,11 @@ async def main():
     """Main entry point."""
     global config
 
-    # Initialize configuration
-    config = PCOConfig.from_env()
+    logger.info("Starting Planning Center MCP Server...")
 
+    # Initialize configuration
     try:
+        config = PCOConfig.from_env()
         # Test configuration
         config.get_auth_headers()
         logger.info("✓ Configuration loaded successfully")
@@ -428,22 +433,38 @@ async def main():
             "Please set PCO_ACCESS_TOKEN or both PCO_APP_ID and PCO_SECRET environment variables"
         )
         sys.exit(1)
+    except Exception as e:
+        logger.error(f"✗ Unexpected error during configuration: {e}")
+        sys.exit(1)
+
+    logger.info("Starting MCP server with stdio transport...")
 
     # Run the MCP server
-    async with stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream,
-            write_stream,
-            InitializationOptions(
-                server_name="planning-center-api",
-                server_version="0.1.0",
-                capabilities=server.get_capabilities(
-                    notification_options=None,
-                    experimental_capabilities=None,
+    try:
+        async with stdio_server() as (read_stream, write_stream):
+            logger.info("MCP server transport established")
+            await server.run(
+                read_stream,
+                write_stream,
+                InitializationOptions(
+                    server_name="planning-center-api",
+                    server_version="0.1.0",
+                    capabilities=server.get_capabilities(
+                        notification_options=None,
+                        experimental_capabilities=None,
+                    ),
                 ),
-            ),
-        )
+            )
+    except Exception as e:
+        logger.error(f"Error running MCP server: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("Server stopped by user")
+    except Exception as e:
+        logger.error(f"Fatal error: {e}")
+        sys.exit(1)

@@ -1,6 +1,5 @@
 """Tests for Planning Center Registrations API."""
 
-
 import pytest
 
 from planning_center_api.client import PCOClient

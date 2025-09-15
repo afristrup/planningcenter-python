@@ -10,16 +10,16 @@ from planning_center_mcp.client import PCOClient
 
 async def test_connection():
     """Test the connection to Planning Center API."""
-    
+
     print("Planning Center MCP Server - Connection Test")
     print("=" * 50)
-    
+
     # Check environment variables
     print("Checking environment variables...")
     access_token = os.getenv("PCO_ACCESS_TOKEN")
     app_id = os.getenv("PCO_APP_ID")
     secret = os.getenv("PCO_SECRET")
-    
+
     if access_token:
         print("✓ PCO_ACCESS_TOKEN found")
     elif app_id and secret:
@@ -30,7 +30,7 @@ async def test_connection():
         print("  - PCO_ACCESS_TOKEN (recommended)")
         print("  - PCO_APP_ID and PCO_SECRET")
         return False
-    
+
     # Load configuration
     try:
         config = PCOConfig.from_env()
@@ -39,7 +39,7 @@ async def test_connection():
     except Exception as e:
         print(f"✗ Configuration error: {e}")
         return False
-    
+
     # Test API connection
     print("\nTesting API connection...")
     try:

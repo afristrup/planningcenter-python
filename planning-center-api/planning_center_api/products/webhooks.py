@@ -252,12 +252,14 @@ class PCOWebhookService:
         if offset is not None:
             params["offset"] = offset
 
-        response = await self.client.get(f"{self.base_url}/webhook_subscriptions", params=params)
-        return [
-            PCOWebhookSubscription(**item) for item in response.get("data", [])
-        ]
+        response = await self.client.get(
+            f"{self.base_url}/webhook_subscriptions", params=params
+        )
+        return [PCOWebhookSubscription(**item) for item in response.get("data", [])]
 
-    async def get_webhook_subscription(self, subscription_id: str) -> PCOWebhookSubscription:
+    async def get_webhook_subscription(
+        self, subscription_id: str
+    ) -> PCOWebhookSubscription:
         """Get a specific webhook subscription.
 
         Args:
@@ -266,7 +268,9 @@ class PCOWebhookService:
         Returns:
             The webhook subscription
         """
-        response = await self.client.get(f"{self.base_url}/webhook_subscriptions/{subscription_id}")
+        response = await self.client.get(
+            f"{self.base_url}/webhook_subscriptions/{subscription_id}"
+        )
         return PCOWebhookSubscription(**response["data"])
 
     async def create_webhook_subscription(
@@ -295,7 +299,9 @@ class PCOWebhookService:
                 },
             }
         }
-        response = await self.client.post(f"{self.base_url}/webhook_subscriptions", json=data)
+        response = await self.client.post(
+            f"{self.base_url}/webhook_subscriptions", json=data
+        )
         return PCOWebhookSubscription(**response["data"])
 
     async def update_webhook_subscription(
@@ -334,9 +340,13 @@ class PCOWebhookService:
         Args:
             subscription_id: The subscription ID
         """
-        await self.client.delete(f"{self.base_url}/webhook_subscriptions/{subscription_id}")
+        await self.client.delete(
+            f"{self.base_url}/webhook_subscriptions/{subscription_id}"
+        )
 
-    async def rotate_webhook_secret(self, subscription_id: str) -> PCOWebhookSubscription:
+    async def rotate_webhook_secret(
+        self, subscription_id: str
+    ) -> PCOWebhookSubscription:
         """Rotate the authenticity secret for a webhook subscription.
 
         Args:
@@ -385,7 +395,8 @@ class PCOWebhookService:
             params["order"] = order
 
         response = await self.client.get(
-            f"{self.base_url}/webhook_subscriptions/{subscription_id}/events", params=params
+            f"{self.base_url}/webhook_subscriptions/{subscription_id}/events",
+            params=params,
         )
         return [PCOWebhookEvent(**item) for item in response.get("data", [])]
 
@@ -417,7 +428,9 @@ class PCOWebhookService:
             f"{self.base_url}/webhook_subscriptions/{subscription_id}/events/{event_id}/ignore"
         )
 
-    async def redeliver_webhook_event(self, subscription_id: str, event_id: str) -> None:
+    async def redeliver_webhook_event(
+        self, subscription_id: str, event_id: str
+    ) -> None:
         """Redeliver a webhook event.
 
         Args:
@@ -500,10 +513,14 @@ class PCOWebhookService:
         if offset is not None:
             params["offset"] = offset
 
-        response = await self.client.get(f"{self.base_url}/available_events", params=params)
+        response = await self.client.get(
+            f"{self.base_url}/available_events", params=params
+        )
         return [PCOAvailableEvent(**item) for item in response.get("data", [])]
 
-    async def get_webhook_organization(self, organization_id: str | None = None) -> PCOWebhookOrganization:
+    async def get_webhook_organization(
+        self, organization_id: str | None = None
+    ) -> PCOWebhookOrganization:
         """Get webhook organization information.
 
         Args:

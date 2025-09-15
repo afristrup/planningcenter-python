@@ -193,7 +193,11 @@ class TestPCOClient:
                 PCOResource(id="1", type="people", attributes={"name": "John"}),
                 PCOResource(id="2", type="people", attributes={"name": "Jane"}),
             ],
-            links=PCOLinks(next=PCOLink(href="https://api.planningcenteronline.com/people/v2/people?page=2")),
+            links=PCOLinks(
+                next=PCOLink(
+                    href="https://api.planningcenteronline.com/people/v2/people?page=2"
+                )
+            ),
         )
 
         mock_collection2 = PCOCollection(
@@ -203,7 +207,9 @@ class TestPCOClient:
 
         with patch.object(client, "_ensure_client") as mock_ensure_client:
             mock_http_client = AsyncMock()
-            mock_http_client.get = AsyncMock(side_effect=[mock_collection1, mock_collection2])
+            mock_http_client.get = AsyncMock(
+                side_effect=[mock_collection1, mock_collection2]
+            )
             mock_ensure_client.return_value = mock_http_client
 
             results = []

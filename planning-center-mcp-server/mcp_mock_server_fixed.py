@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""MCP mock server entry point for Planning Center API testing."""
+"""Fixed MCP mock server entry point for Planning Center API testing."""
 
 import asyncio
 import json
 import logging
 import random
+import sys
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
@@ -12,13 +13,14 @@ from uuid import uuid4
 from mcp.server import Server
 from mcp.server.models import InitializationOptions
 from mcp.server.stdio import stdio_server
-from mcp.types import (
-    Tool,
-    TextContent,
-)
+from mcp.types import Tool, TextContent
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
+# Set up logging to stderr so it appears in Claude Desktop logs
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    stream=sys.stderr,
+)
 logger = logging.getLogger(__name__)
 
 # Create MCP server
@@ -220,6 +222,8 @@ def generate_mock_attendee(attendee_id: Optional[str] = None) -> Dict[str, Any]:
 
 def initialize_mock_data():
     """Initialize the mock data with some sample records."""
+    logger.info("Initializing mock data...")
+
     # Generate some services first
     for _ in range(5):
         mock_data["services"].append(generate_mock_service())
@@ -239,6 +243,10 @@ def initialize_mock_data():
     # Generate some attendees
     for _ in range(15):
         mock_data["attendees"].append(generate_mock_attendee())
+
+    logger.info(
+        f"Mock data initialized: {len(mock_data['people'])} people, {len(mock_data['services'])} services, {len(mock_data['plans'])} plans, {len(mock_data['registrations'])} registrations, {len(mock_data['attendees'])} attendees"
+    )
 
 
 def filter_data(
@@ -303,6 +311,7 @@ def paginate_data(
 @server.list_tools()
 async def list_tools() -> List[Tool]:
     """List available tools."""
+    logger.info("Listing tools")
     return [
         Tool(
             name="get_people",
@@ -568,6 +577,8 @@ async def list_tools() -> List[Tool]:
 @server.call_tool()
 async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
     """Handle tool calls."""
+    logger.info(f"Calling tool: {name} with arguments: {arguments}")
+
     try:
         if name == "get_people":
             filters = {}
@@ -741,25 +752,39 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
 
 async def main():
     """Main entry point."""
+    logger.info("Starting Planning Center Mock MCP Server...")
+
     # Initialize mock data
     initialize_mock_data()
-    logger.info("✓ Mock data initialized")
+
+    logger.info("Starting MCP server with stdio transport...")
 
     # Run the MCP server
-    async with stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream,
-            write_stream,
-            InitializationOptions(
-                server_name="planning-center-mock",
-                server_version="0.1.0",
-                capabilities=server.get_capabilities(
-                    notification_options=None,
-                    experimental_capabilities=None,
+    try:
+        async with stdio_server() as (read_stream, write_stream):
+            logger.info("MCP server transport established")
+            await server.run(
+                read_stream,
+                write_stream,
+                InitializationOptions(
+                    server_name="planning-center-mock",
+                    server_version="0.1.0",
+                    capabilities=server.get_capabilities(
+                        notification_options=None,
+                        experimental_capabilities=None,
+                    ),
                 ),
-            ),
-        )
+            )
+    except Exception as e:
+        logger.error(f"Error running MCP server: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("Server stopped by user")
+    except Exception as e:
+        logger.error(f"Fatal error: {e}")
+        sys.exit(1)

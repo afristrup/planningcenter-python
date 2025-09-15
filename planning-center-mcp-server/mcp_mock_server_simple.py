@@ -1,24 +1,25 @@
 #!/usr/bin/env python3
-"""MCP mock server entry point for Planning Center API testing."""
+"""Simple MCP mock server for Planning Center API testing."""
 
 import asyncio
 import json
 import logging
 import random
+import sys
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
 from mcp.server import Server
-from mcp.server.models import InitializationOptions
 from mcp.server.stdio import stdio_server
-from mcp.types import (
-    Tool,
-    TextContent,
-)
+from mcp.types import Tool, TextContent
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
+# Set up logging to stderr so it appears in Claude Desktop logs
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    stream=sys.stderr,
+)
 logger = logging.getLogger(__name__)
 
 # Create MCP server
@@ -220,6 +221,8 @@ def generate_mock_attendee(attendee_id: Optional[str] = None) -> Dict[str, Any]:
 
 def initialize_mock_data():
     """Initialize the mock data with some sample records."""
+    logger.info("Initializing mock data...")
+
     # Generate some services first
     for _ in range(5):
         mock_data["services"].append(generate_mock_service())
@@ -239,6 +242,10 @@ def initialize_mock_data():
     # Generate some attendees
     for _ in range(15):
         mock_data["attendees"].append(generate_mock_attendee())
+
+    logger.info(
+        f"Mock data initialized: {len(mock_data['people'])} people, {len(mock_data['services'])} services, {len(mock_data['plans'])} plans, {len(mock_data['registrations'])} registrations, {len(mock_data['attendees'])} attendees"
+    )
 
 
 def filter_data(
@@ -303,6 +310,7 @@ def paginate_data(
 @server.list_tools()
 async def list_tools() -> List[Tool]:
     """List available tools."""
+    logger.info("Listing tools")
     return [
         Tool(
             name="get_people",
@@ -320,11 +328,6 @@ async def list_tools() -> List[Tool]:
                         "description": "Offset for pagination",
                         "default": 0,
                     },
-                    "include": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Related resources to include",
-                    },
                     "search": {
                         "type": "string",
                         "description": "Search query for people",
@@ -333,34 +336,7 @@ async def list_tools() -> List[Tool]:
                         "type": "string",
                         "description": "Filter by status (active, inactive)",
                     },
-                    "email": {
-                        "type": "string",
-                        "description": "Filter by email address",
-                    },
-                    "phone": {
-                        "type": "string",
-                        "description": "Filter by phone number",
-                    },
                 },
-            },
-        ),
-        Tool(
-            name="get_person",
-            description="Get a specific person by ID (MOCK DATA)",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "person_id": {
-                        "type": "string",
-                        "description": "ID of the person to retrieve",
-                    },
-                    "include": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Related resources to include",
-                    },
-                },
-                "required": ["person_id"],
             },
         ),
         Tool(
@@ -379,31 +355,7 @@ async def list_tools() -> List[Tool]:
                         "description": "Offset for pagination",
                         "default": 0,
                     },
-                    "include": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Related resources to include",
-                    },
                 },
-            },
-        ),
-        Tool(
-            name="get_service",
-            description="Get a specific service by ID (MOCK DATA)",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "service_id": {
-                        "type": "string",
-                        "description": "ID of the service to retrieve",
-                    },
-                    "include": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Related resources to include",
-                    },
-                },
-                "required": ["service_id"],
             },
         ),
         Tool(
@@ -412,10 +364,6 @@ async def list_tools() -> List[Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "service_id": {
-                        "type": "string",
-                        "description": "Filter plans by service ID",
-                    },
                     "per_page": {
                         "type": "integer",
                         "description": "Number of plans per page (max 100)",
@@ -426,31 +374,7 @@ async def list_tools() -> List[Tool]:
                         "description": "Offset for pagination",
                         "default": 0,
                     },
-                    "include": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Related resources to include",
-                    },
                 },
-            },
-        ),
-        Tool(
-            name="get_plan",
-            description="Get a specific plan by ID (MOCK DATA)",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "plan_id": {
-                        "type": "string",
-                        "description": "ID of the plan to retrieve",
-                    },
-                    "include": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Related resources to include",
-                    },
-                },
-                "required": ["plan_id"],
             },
         ),
         Tool(
@@ -469,35 +393,11 @@ async def list_tools() -> List[Tool]:
                         "description": "Offset for pagination",
                         "default": 0,
                     },
-                    "include": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Related resources to include",
-                    },
                     "status": {
                         "type": "string",
                         "description": "Filter by status (open, closed)",
                     },
                 },
-            },
-        ),
-        Tool(
-            name="get_registration",
-            description="Get a specific registration by ID (MOCK DATA)",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "registration_id": {
-                        "type": "string",
-                        "description": "ID of the registration to retrieve",
-                    },
-                    "include": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Related resources to include",
-                    },
-                },
-                "required": ["registration_id"],
             },
         ),
         Tool(
@@ -516,46 +416,12 @@ async def list_tools() -> List[Tool]:
                         "description": "Offset for pagination",
                         "default": 0,
                     },
-                    "include": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Related resources to include",
-                    },
-                    "event_id": {"type": "string", "description": "Filter by event ID"},
-                    "registration_instance_id": {
-                        "type": "string",
-                        "description": "Filter by registration instance ID",
-                    },
                     "attendance_status": {
                         "type": "string",
                         "description": "Filter by attendance status (checked_in, checked_out)",
                     },
                 },
             },
-        ),
-        Tool(
-            name="get_attendee",
-            description="Get a specific attendee by ID (MOCK DATA)",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "attendee_id": {
-                        "type": "string",
-                        "description": "ID of the attendee to retrieve",
-                    },
-                    "include": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Related resources to include",
-                    },
-                },
-                "required": ["attendee_id"],
-            },
-        ),
-        Tool(
-            name="reset_mock_data",
-            description="Reset mock data to initial state",
-            inputSchema={"type": "object", "properties": {}},
         ),
         Tool(
             name="get_mock_status",
@@ -568,6 +434,8 @@ async def list_tools() -> List[Tool]:
 @server.call_tool()
 async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
     """Handle tool calls."""
+    logger.info(f"Calling tool: {name} with arguments: {arguments}")
+
     try:
         if name == "get_people":
             filters = {}
@@ -575,10 +443,6 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
                 filters["search"] = arguments["search"]
             if arguments.get("status"):
                 filters["status"] = arguments["status"]
-            if arguments.get("email"):
-                filters["email"] = arguments["email"]
-            if arguments.get("phone"):
-                filters["phone"] = arguments["phone"]
 
             filtered_people = filter_data(mock_data["people"], filters)
             result = paginate_data(
@@ -588,15 +452,6 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
             )
             return [TextContent(type="text", text=json.dumps(result, indent=2))]
 
-        elif name == "get_person":
-            person = next(
-                (p for p in mock_data["people"] if p["id"] == arguments["person_id"]),
-                None,
-            )
-            if not person:
-                return [TextContent(type="text", text="Person not found")]
-            return [TextContent(type="text", text=json.dumps(person, indent=2))]
-
         elif name == "get_services":
             result = paginate_data(
                 mock_data["services"],
@@ -605,39 +460,13 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
             )
             return [TextContent(type="text", text=json.dumps(result, indent=2))]
 
-        elif name == "get_service":
-            service = next(
-                (
-                    s
-                    for s in mock_data["services"]
-                    if s["id"] == arguments["service_id"]
-                ),
-                None,
-            )
-            if not service:
-                return [TextContent(type="text", text="Service not found")]
-            return [TextContent(type="text", text=json.dumps(service, indent=2))]
-
         elif name == "get_plans":
-            filters = {}
-            if arguments.get("service_id"):
-                filters["service_id"] = arguments["service_id"]
-
-            filtered_plans = filter_data(mock_data["plans"], filters)
             result = paginate_data(
-                filtered_plans,
+                mock_data["plans"],
                 arguments.get("per_page", 25),
                 arguments.get("offset", 0),
             )
             return [TextContent(type="text", text=json.dumps(result, indent=2))]
-
-        elif name == "get_plan":
-            plan = next(
-                (p for p in mock_data["plans"] if p["id"] == arguments["plan_id"]), None
-            )
-            if not plan:
-                return [TextContent(type="text", text="Plan not found")]
-            return [TextContent(type="text", text=json.dumps(plan, indent=2))]
 
         elif name == "get_registrations":
             filters = {}
@@ -652,19 +481,6 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
             )
             return [TextContent(type="text", text=json.dumps(result, indent=2))]
 
-        elif name == "get_registration":
-            registration = next(
-                (
-                    r
-                    for r in mock_data["registrations"]
-                    if r["id"] == arguments["registration_id"]
-                ),
-                None,
-            )
-            if not registration:
-                return [TextContent(type="text", text="Registration not found")]
-            return [TextContent(type="text", text=json.dumps(registration, indent=2))]
-
         elif name == "get_attendees":
             filters = {}
             if arguments.get("attendance_status"):
@@ -678,54 +494,16 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
             )
             return [TextContent(type="text", text=json.dumps(result, indent=2))]
 
-        elif name == "get_attendee":
-            attendee = next(
-                (
-                    a
-                    for a in mock_data["attendees"]
-                    if a["id"] == arguments["attendee_id"]
-                ),
-                None,
-            )
-            if not attendee:
-                return [TextContent(type="text", text="Attendee not found")]
-            return [TextContent(type="text", text=json.dumps(attendee, indent=2))]
-
-        elif name == "reset_mock_data":
-            # Reset mock data
-            mock_data.clear()
-            mock_data.update(
-                {
-                    "people": [],
-                    "services": [],
-                    "plans": [],
-                    "registrations": [],
-                    "attendees": [],
-                }
-            )
-            initialize_mock_data()
-            result = {
-                "message": "Mock data reset successfully",
-                "counts": {k: len(v) for k, v in mock_data.items()},
-            }
-            return [TextContent(type="text", text=json.dumps(result, indent=2))]
-
         elif name == "get_mock_status":
             result = {
                 "message": "Mock Planning Center API Server",
                 "data_counts": {k: len(v) for k, v in mock_data.items()},
                 "endpoints": [
                     "get_people",
-                    "get_person",
                     "get_services",
-                    "get_service",
                     "get_plans",
-                    "get_plan",
                     "get_registrations",
-                    "get_registration",
                     "get_attendees",
-                    "get_attendee",
-                    "reset_mock_data",
                     "get_mock_status",
                 ],
             }
@@ -741,25 +519,47 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
 
 async def main():
     """Main entry point."""
+    logger.info("Starting Planning Center Mock MCP Server...")
+
     # Initialize mock data
     initialize_mock_data()
-    logger.info("✓ Mock data initialized")
 
-    # Run the MCP server
-    async with stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream,
-            write_stream,
-            InitializationOptions(
-                server_name="planning-center-mock",
-                server_version="0.1.0",
-                capabilities=server.get_capabilities(
-                    notification_options=None,
-                    experimental_capabilities=None,
-                ),
-            ),
-        )
+    logger.info("Starting MCP server with stdio transport...")
+
+    # Run the MCP server with proper error handling
+    try:
+        async with stdio_server() as (read_stream, write_stream):
+            logger.info("MCP server transport established")
+
+            # Create initialization options
+            init_options = server.create_initialization_options()
+            logger.info("Initialization options created successfully")
+
+            # Run the server
+            logger.info("Starting server.run()...")
+            await server.run(
+                read_stream,
+                write_stream,
+                init_options,
+            )
+            logger.info("Server.run() completed successfully")
+
+    except Exception as e:
+        logger.error(f"Error running MCP server: {e}")
+        import traceback
+
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("Server stopped by user")
+    except Exception as e:
+        logger.error(f"Fatal error: {e}")
+        import traceback
+
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        sys.exit(1)

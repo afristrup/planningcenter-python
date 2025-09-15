@@ -364,8 +364,12 @@ class PCOEventResourceAnswer(PCOResource):
 
     def get_event_resource_request_id(self) -> str | None:
         """Get the event resource request ID."""
-        event_resource_request_data = self.get_relationship_data("event_resource_request")
-        if event_resource_request_data and isinstance(event_resource_request_data, dict):
+        event_resource_request_data = self.get_relationship_data(
+            "event_resource_request"
+        )
+        if event_resource_request_data and isinstance(
+            event_resource_request_data, dict
+        ):
             return event_resource_request_data.get("id")
         return None
 

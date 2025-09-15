@@ -7,7 +7,7 @@ from planning_center_api import PCOConfig as BasePCOConfig
 
 class PCOConfig(BasePCOConfig):
     """Configuration for Planning Center API - extends the base config."""
-    
+
     @classmethod
     def from_env(cls) -> "PCOConfig":
         """Create configuration from environment variables."""

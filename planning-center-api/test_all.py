@@ -8,10 +8,10 @@ from pathlib import Path
 
 def run_command(command: list[str], description: str) -> bool:
     """Run a command and return success status."""
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Running: {description}")
     print(f"Command: {' '.join(command)}")
-    print('='*60)
+    print("=" * 60)
 
     try:
         result = subprocess.run(command, check=True, capture_output=True, text=True)
@@ -46,15 +46,23 @@ def main():
         (["python", "-m", "black", "--check", "."], "Black Formatting Check"),
         (["python", "-m", "isort", "--check-only", "."], "Import Sorting Check"),
         (["python", "-m", "mypy", "."], "Type Checking"),
-
         # Unit Tests
         (["python", "-m", "pytest", "tests/unit/", "-v"], "Unit Tests"),
-
         # Integration Tests
         (["python", "-m", "pytest", "tests/integration/", "-v"], "Integration Tests"),
-
         # All Tests with Coverage
-        (["python", "-m", "pytest", "tests/", "--cov=planning_center_api", "--cov-report=term-missing", "-v"], "All Tests with Coverage"),
+        (
+            [
+                "python",
+                "-m",
+                "pytest",
+                "tests/",
+                "--cov=planning_center_api",
+                "--cov-report=term-missing",
+                "-v",
+            ],
+            "All Tests with Coverage",
+        ),
     ]
 
     # Run tests
@@ -68,9 +76,9 @@ def main():
             failed += 1
 
     # Summary
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("📊 TEST SUMMARY")
-    print('='*60)
+    print("=" * 60)
     print(f"✅ Passed: {passed}")
     print(f"❌ Failed: {failed}")
     print(f"📈 Total: {passed + failed}")

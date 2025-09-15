@@ -701,7 +701,9 @@ class PCOServiceService:
         if offset is not None:
             params["offset"] = offset
 
-        response = await self.client.get(f"{self.base_url}/service_types", params=params)
+        response = await self.client.get(
+            f"{self.base_url}/service_types", params=params
+        )
         return [PCOServiceType(**item) for item in response.get("data", [])]
 
     async def get_service_type(self, service_type_id: str) -> PCOServiceType:
@@ -713,7 +715,9 @@ class PCOServiceService:
         Returns:
             The service type
         """
-        response = await self.client.get(f"{self.base_url}/service_types/{service_type_id}")
+        response = await self.client.get(
+            f"{self.base_url}/service_types/{service_type_id}"
+        )
         return PCOServiceType(**response["data"])
 
     # Plan Methods
@@ -823,7 +827,9 @@ class PCOServiceService:
                 "attributes": attributes,
             }
         }
-        response = await self.client.patch(f"{self.base_url}/plans/{plan_id}", json=data)
+        response = await self.client.patch(
+            f"{self.base_url}/plans/{plan_id}", json=data
+        )
         return PCOPlan(**response["data"])
 
     async def delete_plan(self, plan_id: str) -> None:
@@ -924,10 +930,14 @@ class PCOServiceService:
         if offset is not None:
             params["offset"] = offset
 
-        response = await self.client.get(f"{self.base_url}/songs/{song_id}/arrangements", params=params)
+        response = await self.client.get(
+            f"{self.base_url}/songs/{song_id}/arrangements", params=params
+        )
         return [PCOArrangement(**item) for item in response.get("data", [])]
 
-    async def get_arrangement(self, song_id: str, arrangement_id: str) -> PCOArrangement:
+    async def get_arrangement(
+        self, song_id: str, arrangement_id: str
+    ) -> PCOArrangement:
         """Get a specific arrangement.
 
         Args:
@@ -937,7 +947,9 @@ class PCOServiceService:
         Returns:
             The arrangement
         """
-        response = await self.client.get(f"{self.base_url}/songs/{song_id}/arrangements/{arrangement_id}")
+        response = await self.client.get(
+            f"{self.base_url}/songs/{song_id}/arrangements/{arrangement_id}"
+        )
         return PCOArrangement(**response["data"])
 
     # Key Methods

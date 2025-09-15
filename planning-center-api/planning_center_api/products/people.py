@@ -372,7 +372,9 @@ class PCOCustomSender(PCOResource):
         """Get the verification requested date."""
         verification_requested_at = self.get_attribute("verification_requested_at")
         if verification_requested_at:
-            return datetime.fromisoformat(verification_requested_at.replace("Z", "+00:00"))
+            return datetime.fromisoformat(
+                verification_requested_at.replace("Z", "+00:00")
+            )
         return None
 
     def is_verified(self) -> bool:

@@ -305,9 +305,13 @@ class PCOMessage(PCOResource):
 
     def get_rejection_notification_sent_at(self) -> datetime | None:
         """Get the rejection notification sent date."""
-        rejection_notification_sent_at = self.get_attribute("rejection_notification_sent_at")
+        rejection_notification_sent_at = self.get_attribute(
+            "rejection_notification_sent_at"
+        )
         if rejection_notification_sent_at:
-            return datetime.fromisoformat(rejection_notification_sent_at.replace("Z", "+00:00"))
+            return datetime.fromisoformat(
+                rejection_notification_sent_at.replace("Z", "+00:00")
+            )
         return None
 
     def get_from_name(self) -> str | None:
@@ -964,7 +968,9 @@ class PCOWorkflowCard(PCOResource):
         """Get the flagged for notification date."""
         flagged_for_notification_at = self.get_attribute("flagged_for_notification_at")
         if flagged_for_notification_at:
-            return datetime.fromisoformat(flagged_for_notification_at.replace("Z", "+00:00"))
+            return datetime.fromisoformat(
+                flagged_for_notification_at.replace("Z", "+00:00")
+            )
         return None
 
     def get_removed_at(self) -> datetime | None:

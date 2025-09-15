@@ -87,6 +87,7 @@ def mock_oauth_application_data():
 def mock_oauth_application_mau_data():
     """Mock OAuth application MAU data."""
     from planning_center_api.models.relationships import PCORelationships
+
     return {
         "data": {
             "id": "1",
@@ -112,6 +113,7 @@ def mock_oauth_application_mau_data():
 def mock_organization_data():
     """Mock organization data."""
     from planning_center_api.models.relationships import PCORelationships
+
     return {
         "data": {
             "id": "1",
@@ -173,11 +175,15 @@ def mock_personal_access_token_data():
 class TestConnectedApplications:
     """Test connected applications functionality."""
 
-    async def test_get_connected_applications(self, client, mock_connected_application_data):
+    async def test_get_connected_applications(
+        self, client, mock_connected_application_data
+    ):
         """Test getting all connected applications."""
         # Create a proper collection response with specific model types
         collection_data = {
-            "data": [PCOConnectedApplication(**mock_connected_application_data["data"])],
+            "data": [
+                PCOConnectedApplication(**mock_connected_application_data["data"])
+            ],
             "included": None,
             "links": None,
             "meta": None,
@@ -199,9 +205,13 @@ class TestConnectedApplications:
         assert call_args[1]["product"] == "api/v2"
         assert call_args[1]["endpoint"] == "connected_applications"
 
-    async def test_get_connected_application(self, client, mock_connected_application_data):
+    async def test_get_connected_application(
+        self, client, mock_connected_application_data
+    ):
         """Test getting a specific connected application."""
-        client._http_client.get.return_value = PCOConnectedApplication(**mock_connected_application_data["data"])
+        client._http_client.get.return_value = PCOConnectedApplication(
+            **mock_connected_application_data["data"]
+        )
 
         result = await client.get_connected_application("1")
 
@@ -215,10 +225,16 @@ class TestConnectedApplications:
         assert call_args[1]["endpoint"] == "connected_applications"
         assert call_args[1]["resource_id"] == "1"
 
-    async def test_get_connected_application_people(self, client, mock_connected_application_person_data):
+    async def test_get_connected_application_people(
+        self, client, mock_connected_application_person_data
+    ):
         """Test getting people connected to an application."""
         collection_data = {
-            "data": [PCOConnectedApplicationPerson(**mock_connected_application_person_data["data"])],
+            "data": [
+                PCOConnectedApplicationPerson(
+                    **mock_connected_application_person_data["data"]
+                )
+            ],
             "included": None,
             "links": None,
             "meta": None,
@@ -242,9 +258,13 @@ class TestConnectedApplications:
         assert call_args[1]["endpoint"] == "people"
         assert call_args[1]["filter_params"]["connected_application"] == "1"
 
-    async def test_get_connected_application_person(self, client, mock_connected_application_person_data):
+    async def test_get_connected_application_person(
+        self, client, mock_connected_application_person_data
+    ):
         """Test getting a specific person connected to an application."""
-        client._http_client.get.return_value = PCOConnectedApplicationPerson(**mock_connected_application_person_data["data"])
+        client._http_client.get.return_value = PCOConnectedApplicationPerson(
+            **mock_connected_application_person_data["data"]
+        )
 
         result = await client.get_connected_application_person("1", "1")
 
@@ -290,7 +310,9 @@ class TestOAuthApplications:
 
     async def test_get_oauth_application(self, client, mock_oauth_application_data):
         """Test getting a specific OAuth application."""
-        client._http_client.get.return_value = PCOOauthApplication(**mock_oauth_application_data["data"])
+        client._http_client.get.return_value = PCOOauthApplication(
+            **mock_oauth_application_data["data"]
+        )
 
         result = await client.get_oauth_application("1")
 
@@ -304,7 +326,9 @@ class TestOAuthApplications:
         assert call_args[1]["endpoint"] == "oauth_applications"
         assert call_args[1]["resource_id"] == "1"
 
-    async def test_get_oauth_application_mau(self, client, mock_oauth_application_mau_data):
+    async def test_get_oauth_application_mau(
+        self, client, mock_oauth_application_mau_data
+    ):
         """Test getting monthly active users for an OAuth application."""
         collection_data = {
             "data": [PCOOauthApplicationMau(**mock_oauth_application_mau_data["data"])],
@@ -331,9 +355,13 @@ class TestOAuthApplications:
         assert call_args[1]["endpoint"] == "mau"
         assert call_args[1]["filter_params"]["oauth_application"] == "1"
 
-    async def test_get_oauth_application_mau_by_id(self, client, mock_oauth_application_mau_data):
+    async def test_get_oauth_application_mau_by_id(
+        self, client, mock_oauth_application_mau_data
+    ):
         """Test getting a specific MAU record for an OAuth application."""
-        client._http_client.get.return_value = PCOOauthApplicationMau(**mock_oauth_application_mau_data["data"])
+        client._http_client.get.return_value = PCOOauthApplicationMau(
+            **mock_oauth_application_mau_data["data"]
+        )
 
         result = await client.get_oauth_application_mau_by_id("1", "1")
 
@@ -354,7 +382,9 @@ class TestOrganization:
 
     async def test_get_organization(self, client, mock_organization_data):
         """Test getting organization information."""
-        client._http_client.get.return_value = PCOOrganization(**mock_organization_data["data"])
+        client._http_client.get.return_value = PCOOrganization(
+            **mock_organization_data["data"]
+        )
 
         result = await client.get_organization()
 
@@ -382,7 +412,9 @@ class TestOrganization:
 
     async def test_get_organization_with_id(self, client, mock_organization_data):
         """Test getting organization information with specific ID."""
-        client._http_client.get.return_value = PCOOrganization(**mock_organization_data["data"])
+        client._http_client.get.return_value = PCOOrganization(
+            **mock_organization_data["data"]
+        )
 
         result = await client.get_organization("1")
 
@@ -401,7 +433,9 @@ class TestPerson:
 
     async def test_get_person(self, client, mock_person_data):
         """Test getting person information."""
-        client._http_client.get.return_value = PCOOrganizationPerson(**mock_person_data["data"])
+        client._http_client.get.return_value = PCOOrganizationPerson(
+            **mock_person_data["data"]
+        )
 
         result = await client.get_organization_person()
 
@@ -419,7 +453,9 @@ class TestPerson:
 
     async def test_get_person_with_id(self, client, mock_person_data):
         """Test getting person information with specific ID."""
-        client._http_client.get.return_value = PCOOrganizationPerson(**mock_person_data["data"])
+        client._http_client.get.return_value = PCOOrganizationPerson(
+            **mock_person_data["data"]
+        )
 
         result = await client.get_organization_person("1")
 
@@ -437,7 +473,9 @@ class TestPerson:
 class TestPersonalAccessTokens:
     """Test personal access tokens functionality."""
 
-    async def test_get_personal_access_tokens(self, client, mock_personal_access_token_data):
+    async def test_get_personal_access_tokens(
+        self, client, mock_personal_access_token_data
+    ):
         """Test getting all personal access tokens."""
         collection_data = {
             "data": [PCOPersonalAccessToken(**mock_personal_access_token_data["data"])],
@@ -460,9 +498,13 @@ class TestPersonalAccessTokens:
         assert call_args[1]["product"] == "api/v2"
         assert call_args[1]["endpoint"] == "personal_access_tokens"
 
-    async def test_get_personal_access_token(self, client, mock_personal_access_token_data):
+    async def test_get_personal_access_token(
+        self, client, mock_personal_access_token_data
+    ):
         """Test getting a specific personal access token."""
-        client._http_client.get.return_value = PCOPersonalAccessToken(**mock_personal_access_token_data["data"])
+        client._http_client.get.return_value = PCOPersonalAccessToken(
+            **mock_personal_access_token_data["data"]
+        )
 
         result = await client.get_personal_access_token("1")
 
@@ -480,18 +522,26 @@ class TestPersonalAccessTokens:
 class TestModelMethods:
     """Test model-specific methods."""
 
-    def test_connected_application_person_connected_at_parsing(self, mock_connected_application_person_data):
+    def test_connected_application_person_connected_at_parsing(
+        self, mock_connected_application_person_data
+    ):
         """Test that connected_at is properly parsed as datetime."""
-        person = PCOConnectedApplicationPerson(**mock_connected_application_person_data["data"])
+        person = PCOConnectedApplicationPerson(
+            **mock_connected_application_person_data["data"]
+        )
         connected_at = person.get_connected_at()
         assert isinstance(connected_at, datetime)
         assert connected_at.year == 2024
         assert connected_at.month == 1
         assert connected_at.day == 1
 
-    def test_connected_application_person_full_name(self, mock_connected_application_person_data):
+    def test_connected_application_person_full_name(
+        self, mock_connected_application_person_data
+    ):
         """Test full name generation."""
-        person = PCOConnectedApplicationPerson(**mock_connected_application_person_data["data"])
+        person = PCOConnectedApplicationPerson(
+            **mock_connected_application_person_data["data"]
+        )
         assert person.get_full_name() == "John Doe"
 
     def test_connected_application_person_full_name_empty(self):
@@ -503,7 +553,9 @@ class TestModelMethods:
         )
         assert person.get_full_name() == ""
 
-    def test_oauth_application_mau_relationship_access(self, mock_oauth_application_mau_data):
+    def test_oauth_application_mau_relationship_access(
+        self, mock_oauth_application_mau_data
+    ):
         """Test OAuth application relationship access."""
         mau = PCOOauthApplicationMau(**mock_oauth_application_mau_data["data"])
         oauth_app_id = mau.get_oauth_application_id()
@@ -539,10 +591,14 @@ class TestModelMethods:
 class TestPaginationAndFiltering:
     """Test pagination and filtering parameters."""
 
-    async def test_get_connected_applications_with_pagination(self, client, mock_connected_application_data):
+    async def test_get_connected_applications_with_pagination(
+        self, client, mock_connected_application_data
+    ):
         """Test getting connected applications with pagination."""
         collection_data = {
-            "data": [PCOConnectedApplication(**mock_connected_application_data["data"])],
+            "data": [
+                PCOConnectedApplication(**mock_connected_application_data["data"])
+            ],
             "included": None,
             "links": None,
             "meta": None,
@@ -558,7 +614,9 @@ class TestPaginationAndFiltering:
         assert call_args[1]["per_page"] == 10
         assert call_args[1]["offset"] == 20
 
-    async def test_get_oauth_applications_with_include(self, client, mock_oauth_application_data):
+    async def test_get_oauth_applications_with_include(
+        self, client, mock_oauth_application_data
+    ):
         """Test getting OAuth applications with include parameter."""
         collection_data = {
             "data": [PCOOauthApplication(**mock_oauth_application_data["data"])],
@@ -576,7 +634,9 @@ class TestPaginationAndFiltering:
         assert call_args[1]["endpoint"] == "oauth_applications"
         assert call_args[1]["include"] == ["mau"]
 
-    async def test_get_personal_access_tokens_with_all_params(self, client, mock_personal_access_token_data):
+    async def test_get_personal_access_tokens_with_all_params(
+        self, client, mock_personal_access_token_data
+    ):
         """Test getting personal access tokens with all parameters."""
         collection_data = {
             "data": [PCOPersonalAccessToken(**mock_personal_access_token_data["data"])],
@@ -587,9 +647,7 @@ class TestPaginationAndFiltering:
         client._http_client.get.return_value = PCOCollection(**collection_data)
 
         await client.get_personal_access_tokens(
-            per_page=50,
-            offset=100,
-            include=["organization"]
+            per_page=50, offset=100, include=["organization"]
         )
 
         client._http_client.get.assert_called_once()

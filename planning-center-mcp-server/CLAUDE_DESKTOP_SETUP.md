@@ -24,7 +24,7 @@ Add this configuration:
       "args": [
         "run",
         "python",
-        "mcp_mock_server.py"
+        "mcp_mock_server_fixed.py"
       ],
       "cwd": "C:\\Users\\aksel\\Documents\\GitHub\\planningcenter-wrapper\\planning-center-mcp-server"
     }
@@ -70,7 +70,7 @@ You need one of these authentication methods:
       "args": [
         "run",
         "python",
-        "mcp_server.py"
+        "mcp_server_fixed.py"
       ],
       "cwd": "C:\\Users\\aksel\\Documents\\GitHub\\planningcenter-wrapper\\planning-center-mcp-server",
       "env": {
@@ -120,7 +120,7 @@ uv run python test_mcp_servers.py
 ### **Test Real Server**
 ```bash
 cd planning-center-mcp-server
-uv run python mcp_server.py
+uv run python mcp_server_fixed.py
 ```
 
 ## 🔧 **Troubleshooting**
@@ -152,12 +152,12 @@ uv run python mcp_server.py
 1. **Test server manually:**
    ```bash
    cd planning-center-mcp-server
-   uv run python mcp_mock_server.py
+   uv run python mcp_mock_server_fixed.py
    ```
 
 2. **Check server status:**
    ```bash
-   uv run python test_mcp_servers.py
+   uv run python test_fixed_servers.py
    ```
 
 3. **Verify configuration:**
@@ -197,12 +197,12 @@ You can have both servers configured and switch between them by commenting/uncom
   "mcpServers": {
     "planning-center-mock": {
       "command": "uv",
-      "args": ["run", "python", "mcp_mock_server.py"],
+      "args": ["run", "python", "mcp_mock_server_fixed.py"],
       "cwd": "C:\\Users\\aksel\\Documents\\GitHub\\planningcenter-wrapper\\planning-center-mcp-server"
     }
     // "planning-center": {
     //   "command": "uv",
-    //   "args": ["run", "python", "mcp_server.py"],
+    //   "args": ["run", "python", "mcp_server_fixed.py"],
     //   "cwd": "C:\\Users\\aksel\\Documents\\GitHub\\planningcenter-wrapper\\planning-center-mcp-server",
     //   "env": {
     //     "PCO_ACCESS_TOKEN": "your_token_here"

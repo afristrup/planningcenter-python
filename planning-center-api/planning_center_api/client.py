@@ -574,7 +574,10 @@ class PCOClient:
                 per_page=per_page,
                 offset=offset,
                 include=include,
-                filter_params={**(filter_params or {}), "registration": registration_id},
+                filter_params={
+                    **(filter_params or {}),
+                    "registration": registration_id,
+                },
                 sort=sort,
                 **kwargs,
             )
@@ -624,7 +627,10 @@ class PCOClient:
                 per_page=per_page,
                 offset=offset,
                 include=include,
-                filter_params={**(filter_params or {}), "registration": registration_id},
+                filter_params={
+                    **(filter_params or {}),
+                    "registration": registration_id,
+                },
                 sort=sort,
                 **kwargs,
             )
@@ -674,7 +680,10 @@ class PCOClient:
                 per_page=per_page,
                 offset=offset,
                 include=include,
-                filter_params={**(filter_params or {}), "registration_instance": instance_id},
+                filter_params={
+                    **(filter_params or {}),
+                    "registration_instance": instance_id,
+                },
                 sort=sort,
                 **kwargs,
             )

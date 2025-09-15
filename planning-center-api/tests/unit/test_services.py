@@ -485,9 +485,7 @@ class TestPCOServiceService:
         assert len(service_types) == 1
         assert service_types[0].id == "1"
         assert service_types[0].name == "Sunday Morning"
-        mock_client.get.assert_called_once_with(
-            "/services/v2/service_types", params={}
-        )
+        mock_client.get.assert_called_once_with("/services/v2/service_types", params={})
 
     async def test_get_service_type(self, service_service, mock_client):
         """Test getting a specific service type."""
@@ -567,9 +565,7 @@ class TestPCOServiceService:
         mock_client.post.return_value = mock_response
 
         plan = await service_service.create_plan(
-            service_type_id="1",
-            title="New Service Plan",
-            series_title="New Series"
+            service_type_id="1", title="New Service Plan", series_title="New Series"
         )
 
         assert plan.id == "1"
@@ -594,9 +590,7 @@ class TestPCOServiceService:
         mock_client.patch.return_value = mock_response
 
         plan = await service_service.update_plan(
-            plan_id="1",
-            title="Updated Service Plan",
-            series_title="Updated Series"
+            plan_id="1", title="Updated Service Plan", series_title="Updated Series"
         )
 
         assert plan.id == "1"
@@ -604,7 +598,10 @@ class TestPCOServiceService:
         mock_client.patch.assert_called_once()
         call_args = mock_client.patch.call_args
         assert call_args[0][0] == "/services/v2/plans/1"
-        assert call_args[1]["json"]["data"]["attributes"]["title"] == "Updated Service Plan"
+        assert (
+            call_args[1]["json"]["data"]["attributes"]["title"]
+            == "Updated Service Plan"
+        )
 
     async def test_delete_plan(self, service_service, mock_client):
         """Test deleting a plan."""
@@ -670,9 +667,7 @@ class TestPCOServiceService:
         mock_client.post.return_value = mock_response
 
         song = await service_service.create_song(
-            title="New Song",
-            author="New Author",
-            ccli_number="12345"
+            title="New Song", author="New Author", ccli_number="12345"
         )
 
         assert song.id == "1"

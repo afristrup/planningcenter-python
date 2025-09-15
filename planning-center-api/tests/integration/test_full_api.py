@@ -40,7 +40,9 @@ class TestFullAPIIntegration:
                 },
             ],
             "links": {
-                "self": {"href": "https://api.planningcenteronline.com/test/v2/test_resource"},
+                "self": {
+                    "href": "https://api.planningcenteronline.com/test/v2/test_resource"
+                },
             },
         }
 
@@ -57,7 +59,9 @@ class TestFullAPIIntegration:
 
     async def test_all_products_accessible(self, client):
         """Test that all products are accessible through the client."""
-        client._http_client.get.return_value = PCOCollection(**{"data": [], "links": {}})
+        client._http_client.get.return_value = PCOCollection(
+            **{"data": [], "links": {}}
+        )
 
         # Test all products with actual resources
         test_cases = [
@@ -88,7 +92,9 @@ class TestFullAPIIntegration:
         assert isinstance(result, PCOCollection)
 
         # Test get_person
-        client._http_client.get.return_value = PCOResource(**mock_collection_response["data"][0])
+        client._http_client.get.return_value = PCOResource(
+            **mock_collection_response["data"][0]
+        )
         result = await client.get_person("123")
         assert isinstance(result, PCOResource)
 
@@ -118,7 +124,9 @@ class TestFullAPIIntegration:
         assert isinstance(result, PCOCollection)
 
         # Test get_service
-        client._http_client.get.return_value = PCOResource(**mock_collection_response["data"][0])
+        client._http_client.get.return_value = PCOResource(
+            **mock_collection_response["data"][0]
+        )
         result = await client.get_service("123")
         assert isinstance(result, PCOResource)
 
@@ -128,7 +136,9 @@ class TestFullAPIIntegration:
         assert isinstance(result, PCOCollection)
 
         # Test get_plan
-        client._http_client.get.return_value = PCOResource(**mock_collection_response["data"][0])
+        client._http_client.get.return_value = PCOResource(
+            **mock_collection_response["data"][0]
+        )
         result = await client.get_plan("123")
         assert isinstance(result, PCOResource)
 
@@ -141,7 +151,9 @@ class TestFullAPIIntegration:
         assert isinstance(result, PCOCollection)
 
         # Test get_registration_event
-        client._http_client.get.return_value = PCOResource(**mock_collection_response["data"][0])
+        client._http_client.get.return_value = PCOResource(
+            **mock_collection_response["data"][0]
+        )
         result = await client.get_registration_event("123")
         assert isinstance(result, PCOResource)
 
@@ -151,7 +163,9 @@ class TestFullAPIIntegration:
         assert isinstance(result, PCOCollection)
 
         # Test get_registration
-        client._http_client.get.return_value = PCOResource(**mock_collection_response["data"][0])
+        client._http_client.get.return_value = PCOResource(
+            **mock_collection_response["data"][0]
+        )
         result = await client.get_registration("123")
         assert isinstance(result, PCOResource)
 
@@ -175,7 +189,9 @@ class TestFullAPIIntegration:
         result = await client.get_closed_registrations()
         assert isinstance(result, PCOCollection)
 
-        result = await client.get_registrations_by_capacity(min_capacity=10, max_capacity=100)
+        result = await client.get_registrations_by_capacity(
+            min_capacity=10, max_capacity=100
+        )
         assert isinstance(result, PCOCollection)
 
         # Test get_attendees
@@ -183,7 +199,9 @@ class TestFullAPIIntegration:
         assert isinstance(result, PCOCollection)
 
         # Test get_attendee
-        client._http_client.get.return_value = PCOResource(**mock_collection_response["data"][0])
+        client._http_client.get.return_value = PCOResource(
+            **mock_collection_response["data"][0]
+        )
         result = await client.get_attendee("123")
         assert isinstance(result, PCOResource)
 
@@ -196,11 +214,19 @@ class TestFullAPIIntegration:
         result = await client.get_checked_in_attendees()
         assert isinstance(result, PCOCollection)
 
-    async def test_generic_crud_operations_all_products(self, client, mock_resource_response):
+    async def test_generic_crud_operations_all_products(
+        self, client, mock_resource_response
+    ):
         """Test generic CRUD operations for all products."""
-        client._http_client.get.return_value = PCOResource(**mock_resource_response["data"])
-        client._http_client.post.return_value = PCOResource(**mock_resource_response["data"])
-        client._http_client.patch.return_value = PCOResource(**mock_resource_response["data"])
+        client._http_client.get.return_value = PCOResource(
+            **mock_resource_response["data"]
+        )
+        client._http_client.post.return_value = PCOResource(
+            **mock_resource_response["data"]
+        )
+        client._http_client.patch.return_value = PCOResource(
+            **mock_resource_response["data"]
+        )
         client._http_client.delete.return_value = True
 
         test_cases = [
@@ -238,21 +264,39 @@ class TestFullAPIIntegration:
         # Mock pagination response
         first_page = {
             "data": [
-                {"id": "1", "type": "test_resource", "attributes": {"name": "Resource 1"}},
-                {"id": "2", "type": "test_resource", "attributes": {"name": "Resource 2"}},
+                {
+                    "id": "1",
+                    "type": "test_resource",
+                    "attributes": {"name": "Resource 1"},
+                },
+                {
+                    "id": "2",
+                    "type": "test_resource",
+                    "attributes": {"name": "Resource 2"},
+                },
             ],
             "links": {
-                "self": {"href": "https://api.planningcenteronline.com/test/v2/test_resource"},
-                "next": {"href": "https://api.planningcenteronline.com/test/v2/test_resource?page=2"},
+                "self": {
+                    "href": "https://api.planningcenteronline.com/test/v2/test_resource"
+                },
+                "next": {
+                    "href": "https://api.planningcenteronline.com/test/v2/test_resource?page=2"
+                },
             },
         }
 
         second_page = {
             "data": [
-                {"id": "3", "type": "test_resource", "attributes": {"name": "Resource 3"}},
+                {
+                    "id": "3",
+                    "type": "test_resource",
+                    "attributes": {"name": "Resource 3"},
+                },
             ],
             "links": {
-                "self": {"href": "https://api.planningcenteronline.com/test/v2/test_resource?page=2"},
+                "self": {
+                    "href": "https://api.planningcenteronline.com/test/v2/test_resource?page=2"
+                },
             },
         }
 
@@ -356,8 +400,8 @@ class TestFullAPIIntegration:
             assert ctx_client is client
             assert client._http_client is not None
             # The http client should be properly initialized
-            assert hasattr(client._http_client, '__aenter__')
-            assert hasattr(client._http_client, '__aexit__')
+            assert hasattr(client._http_client, "__aenter__")
+            assert hasattr(client._http_client, "__aexit__")
 
     async def test_error_handling(self, client):
         """Test error handling for various scenarios."""
