@@ -1,606 +1,421 @@
-"""Registrations product models for Planning Center API."""
+"""Registrations API models for Planning Center Online."""
 
-from datetime import UTC, datetime
 from typing import Any
 
 from ..models.base import PCOResource
 
 
-class PCORegistrationEvent(PCOResource):
-    """Represents a registration event in Planning Center Registrations."""
+class PCOAttendee(PCOResource):
+    """Represents an attendee in Planning Center Registrations."""
+
+    def get_complete(self) -> bool | None:
+        """Get whether attendee has completed all necessary items."""
+        return self.get_attribute("complete")
+
+    def get_active(self) -> bool | None:
+        """Get whether the attendee is active."""
+        return self.get_attribute("active")
+
+    def get_canceled(self) -> bool | None:
+        """Get whether the attendee is canceled."""
+        return self.get_attribute("canceled")
+
+    def get_waitlisted(self) -> bool | None:
+        """Get whether the attendee is waitlisted."""
+        return self.get_attribute("waitlisted")
+
+    def get_waitlisted_at(self) -> str | None:
+        """Get UTC time at which the attendee was waitlisted."""
+        return self.get_attribute("waitlisted_at")
+
+    def get_created_at(self) -> str | None:
+        """Get the creation timestamp."""
+        return self.get_attribute("created_at")
+
+    def get_updated_at(self) -> str | None:
+        """Get the last update timestamp."""
+        return self.get_attribute("updated_at")
+
+    def get_emergency_contact(self) -> dict[str, Any] | None:
+        """Get the associated emergency contact."""
+        return self.get_relationship("emergency_contact")
+
+    def get_person(self) -> dict[str, Any] | None:
+        """Get the associated person."""
+        return self.get_relationship("person")
+
+    def get_registration(self) -> dict[str, Any] | None:
+        """Get the associated registration."""
+        return self.get_relationship("registration")
+
+    def get_selection_type(self) -> dict[str, Any] | None:
+        """Get the associated selection type."""
+        return self.get_relationship("selection_type")
+
+    def get_signup(self) -> dict[str, Any] | None:
+        """Get the associated signup."""
+        return self.get_relationship("signup")
+
+
+class PCORegistrationsCampus(PCOResource):
+    """Represents a campus in Planning Center Registrations."""
 
     def get_name(self) -> str | None:
-        """Get the event name."""
+        """Get the campus name."""
         return self.get_attribute("name")
 
-    def get_description(self) -> str | None:
-        """Get the event description."""
-        return self.get_attribute("description")
+    def get_street(self) -> str | None:
+        """Get the street address of the campus."""
+        return self.get_attribute("street")
 
-    def get_start_time(self) -> datetime | None:
-        """Get the event start time."""
-        start_time = self.get_attribute("start_time")
-        if start_time:
-            return datetime.fromisoformat(start_time.replace("Z", "+00:00"))
-        return None
+    def get_city(self) -> str | None:
+        """Get the city where the campus is located."""
+        return self.get_attribute("city")
 
-    def get_end_time(self) -> datetime | None:
-        """Get the event end time."""
-        end_time = self.get_attribute("end_time")
-        if end_time:
-            return datetime.fromisoformat(end_time.replace("Z", "+00:00"))
-        return None
+    def get_state(self) -> str | None:
+        """Get the state or province where the campus is located."""
+        return self.get_attribute("state")
 
-    def get_registration_start_time(self) -> datetime | None:
-        """Get the registration start time."""
-        reg_start = self.get_attribute("registration_start_time")
-        if reg_start:
-            return datetime.fromisoformat(reg_start.replace("Z", "+00:00"))
-        return None
+    def get_zip(self) -> str | None:
+        """Get the zip code of the campus."""
+        return self.get_attribute("zip")
 
-    def get_registration_end_time(self) -> datetime | None:
-        """Get the registration end time."""
-        reg_end = self.get_attribute("registration_end_time")
-        if reg_end:
-            return datetime.fromisoformat(reg_end.replace("Z", "+00:00"))
-        return None
+    def get_country(self) -> str | None:
+        """Get the country where the campus is located."""
+        return self.get_attribute("country")
 
-    def get_capacity(self) -> int | None:
-        """Get the event capacity."""
-        return self.get_attribute("capacity")
+    def get_full_formatted_address(self) -> str | None:
+        """Get the full formatted address."""
+        return self.get_attribute("full_formatted_address")
 
-    def get_registered_count(self) -> int:
-        """Get the number of registered people."""
-        return self.get_attribute("registered_count", 0)
+    def get_created_at(self) -> str | None:
+        """Get the creation timestamp."""
+        return self.get_attribute("created_at")
 
-    def get_available_spots(self) -> int | None:
-        """Get the number of available spots."""
-        capacity = self.get_capacity()
-        if capacity is not None:
-            return capacity - self.get_registered_count()
-        return None
+    def get_updated_at(self) -> str | None:
+        """Get the last update timestamp."""
+        return self.get_attribute("updated_at")
 
-    def is_registration_open(self) -> bool:
-        """Check if registration is currently open."""
-        now = datetime.now(UTC)
-        reg_start = self.get_registration_start_time()
-        reg_end = self.get_registration_end_time()
+    def get_organization(self) -> dict[str, Any] | None:
+        """Get the associated organization."""
+        return self.get_relationship("organization")
 
-        if reg_start and now < reg_start:
-            return False
-        if reg_end and now > reg_end:
-            return False
-        return True
-
-    def get_created_at(self) -> datetime | None:
-        """Get the event creation time."""
-        created_at = self.get_attribute("created_at")
-        if created_at:
-            return datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-        return None
-
-    def get_updated_at(self) -> datetime | None:
-        """Get the event last update time."""
-        updated_at = self.get_attribute("updated_at")
-        if updated_at:
-            return datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
-        return None
+    def get_signup(self) -> dict[str, Any] | None:
+        """Get the associated signup."""
+        return self.get_relationship("signup")
 
 
-class PCORegistrationEventInstance(PCOResource):
-    """Represents a registration event instance in Planning Center Registrations."""
+class PCORegistrationsCategory(PCOResource):
+    """Represents a category in Planning Center Registrations."""
 
-    def get_starts_at(self) -> datetime | None:
-        """Get the event instance start time."""
-        starts_at = self.get_attribute("starts_at")
-        if starts_at:
-            return datetime.fromisoformat(starts_at.replace("Z", "+00:00"))
-        return None
+    def get_name(self) -> str | None:
+        """Get the category name."""
+        return self.get_attribute("name")
 
-    def get_ends_at(self) -> datetime | None:
-        """Get the event instance end time."""
-        ends_at = self.get_attribute("ends_at")
-        if ends_at:
-            return datetime.fromisoformat(ends_at.replace("Z", "+00:00"))
-        return None
+    def get_created_at(self) -> str | None:
+        """Get the creation timestamp."""
+        return self.get_attribute("created_at")
 
-    def get_capacity(self) -> int | None:
-        """Get the event instance capacity."""
-        return self.get_attribute("capacity")
+    def get_updated_at(self) -> str | None:
+        """Get the last update timestamp."""
+        return self.get_attribute("updated_at")
 
-    def get_registered_count(self) -> int:
-        """Get the number of registered people for this instance."""
-        return self.get_attribute("registered_count", 0)
+    def get_organization(self) -> dict[str, Any] | None:
+        """Get the associated organization."""
+        return self.get_relationship("organization")
 
-    def get_available_spots(self) -> int | None:
-        """Get the number of available spots for this instance."""
-        capacity = self.get_capacity()
-        if capacity is not None:
-            return capacity - self.get_registered_count()
-        return None
-
-    def get_created_at(self) -> datetime | None:
-        """Get the event instance creation time."""
-        created_at = self.get_attribute("created_at")
-        if created_at:
-            return datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-        return None
-
-    def get_updated_at(self) -> datetime | None:
-        """Get the event instance last update time."""
-        updated_at = self.get_attribute("updated_at")
-        if updated_at:
-            return datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
-        return None
-
-    def get_event_id(self) -> str | None:
-        """Get the event ID."""
-        event_data = self.get_relationship_data("event")
-        if event_data and isinstance(event_data, dict):
-            return event_data.get("id")
-        return None
+    def get_signup(self) -> dict[str, Any] | None:
+        """Get the associated signup."""
+        return self.get_relationship("signup")
 
 
-class PCORegistrationEventTime(PCOResource):
-    """Represents a registration event time in Planning Center Registrations."""
+class PCOEmergencyContact(PCOResource):
+    """Represents an emergency contact in Planning Center Registrations."""
 
-    def get_starts_at(self) -> datetime | None:
-        """Get the event time start."""
-        starts_at = self.get_attribute("starts_at")
-        if starts_at:
-            return datetime.fromisoformat(starts_at.replace("Z", "+00:00"))
-        return None
+    def get_name(self) -> str | None:
+        """Get the emergency contact name."""
+        return self.get_attribute("name")
 
-    def get_ends_at(self) -> datetime | None:
-        """Get the event time end."""
-        ends_at = self.get_attribute("ends_at")
-        if ends_at:
-            return datetime.fromisoformat(ends_at.replace("Z", "+00:00"))
-        return None
+    def get_phone_number(self) -> str | None:
+        """Get the phone number of the emergency contact person."""
+        return self.get_attribute("phone_number")
 
-    def get_created_at(self) -> datetime | None:
-        """Get the event time creation time."""
-        created_at = self.get_attribute("created_at")
-        if created_at:
-            return datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-        return None
+    def get_attendee(self) -> dict[str, Any] | None:
+        """Get the associated attendee."""
+        return self.get_relationship("attendee")
 
-    def get_updated_at(self) -> datetime | None:
-        """Get the event time last update time."""
-        updated_at = self.get_attribute("updated_at")
-        if updated_at:
-            return datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
-        return None
 
-    def get_event_id(self) -> str | None:
-        """Get the event ID."""
-        event_data = self.get_relationship_data("event")
-        if event_data and isinstance(event_data, dict):
-            return event_data.get("id")
-        return None
+class PCORegistrationsOrganization(PCOResource):
+    """Represents an organization in Planning Center Registrations."""
+
+    def get_name(self) -> str | None:
+        """Get the organization name."""
+        return self.get_attribute("name")
+
+    def get_created_at(self) -> str | None:
+        """Get the creation timestamp."""
+        return self.get_attribute("created_at")
+
+    def get_updated_at(self) -> str | None:
+        """Get the last update timestamp."""
+        return self.get_attribute("updated_at")
+
+    def get_campuses(self) -> list[dict[str, Any]] | None:
+        """Get associated campuses."""
+        return self.get_relationship("campuses")
+
+    def get_categories(self) -> list[dict[str, Any]] | None:
+        """Get associated categories."""
+        return self.get_relationship("categories")
+
+    def get_signups(self) -> list[dict[str, Any]] | None:
+        """Get associated signups."""
+        return self.get_relationship("signups")
+
+
+class PCORegistrationsPerson(PCOResource):
+    """Represents a person in Planning Center Registrations."""
+
+    def get_first_name(self) -> str | None:
+        """Get the first name."""
+        return self.get_attribute("first_name")
+
+    def get_last_name(self) -> str | None:
+        """Get the last name."""
+        return self.get_attribute("last_name")
+
+    def get_name(self) -> str | None:
+        """Get the full name."""
+        return self.get_attribute("name")
+
+    def get_attendee(self) -> dict[str, Any] | None:
+        """Get the associated attendee."""
+        return self.get_relationship("attendee")
+
+    def get_registration(self) -> dict[str, Any] | None:
+        """Get the associated registration."""
+        return self.get_relationship("registration")
 
 
 class PCORegistration(PCOResource):
     """Represents a registration in Planning Center Registrations."""
 
+    def get_created_at(self) -> str | None:
+        """Get the creation timestamp."""
+        return self.get_attribute("created_at")
+
+    def get_updated_at(self) -> str | None:
+        """Get the last update timestamp."""
+        return self.get_attribute("updated_at")
+
+    def get_created_by(self) -> dict[str, Any] | None:
+        """Get the associated created by person."""
+        return self.get_relationship("created_by")
+
+    def get_registrant_contact(self) -> dict[str, Any] | None:
+        """Get the associated registrant contact."""
+        return self.get_relationship("registrant_contact")
+
+    def get_attendee(self) -> dict[str, Any] | None:
+        """Get the associated attendee."""
+        return self.get_relationship("attendee")
+
+    def get_signup(self) -> dict[str, Any] | None:
+        """Get the associated signup."""
+        return self.get_relationship("signup")
+
+
+class PCOSelectionType(PCOResource):
+    """Represents a selection type in Planning Center Registrations."""
+
     def get_name(self) -> str | None:
-        """Get the registration name."""
+        """Get the selection type name."""
         return self.get_attribute("name")
+
+    def get_publicly_available(self) -> bool | None:
+        """Get whether the selection type is available to the public."""
+        return self.get_attribute("publicly_available")
+
+    def get_price_cents(self) -> int | None:
+        """Get the price of selection type in cents."""
+        return self.get_attribute("price_cents")
+
+    def get_price_currency(self) -> str | None:
+        """Get the signup currency code."""
+        return self.get_attribute("price_currency")
+
+    def get_price_currency_symbol(self) -> str | None:
+        """Get the signup currency symbol."""
+        return self.get_attribute("price_currency_symbol")
+
+    def get_price_formatted(self) -> str | None:
+        """Get the price with currency formatting."""
+        return self.get_attribute("price_formatted")
+
+    def get_created_at(self) -> str | None:
+        """Get the creation timestamp."""
+        return self.get_attribute("created_at")
+
+    def get_updated_at(self) -> str | None:
+        """Get the last update timestamp."""
+        return self.get_attribute("updated_at")
+
+    def get_attendee(self) -> dict[str, Any] | None:
+        """Get the associated attendee."""
+        return self.get_relationship("attendee")
+
+
+class PCOSignup(PCOResource):
+    """Represents a signup in Planning Center Registrations."""
+
+    def get_archived(self) -> bool | None:
+        """Get whether the signup is archived or not."""
+        return self.get_attribute("archived")
+
+    def get_close_at(self) -> str | None:
+        """Get UTC time at which registration closes."""
+        return self.get_attribute("close_at")
 
     def get_description(self) -> str | None:
-        """Get the registration description."""
+        """Get the description of the signup."""
         return self.get_attribute("description")
 
-    def get_registration_start_time(self) -> datetime | None:
-        """Get the registration start time."""
-        reg_start = self.get_attribute("registration_start_time")
-        if reg_start:
-            return datetime.fromisoformat(reg_start.replace("Z", "+00:00"))
-        return None
-
-    def get_registration_end_time(self) -> datetime | None:
-        """Get the registration end time."""
-        reg_end = self.get_attribute("registration_end_time")
-        if reg_end:
-            return datetime.fromisoformat(reg_end.replace("Z", "+00:00"))
-        return None
-
-    def get_capacity(self) -> int | None:
-        """Get the registration capacity."""
-        return self.get_attribute("capacity")
-
-    def get_registered_count(self) -> int:
-        """Get the number of registered people."""
-        return self.get_attribute("registered_count", 0)
-
-    def get_available_spots(self) -> int | None:
-        """Get the number of available spots."""
-        capacity = self.get_capacity()
-        if capacity is not None:
-            return capacity - self.get_registered_count()
-        return None
-
-    def is_registration_open(self) -> bool:
-        """Check if registration is currently open."""
-        now = datetime.now(UTC)
-        reg_start = self.get_registration_start_time()
-        reg_end = self.get_registration_end_time()
-
-        if reg_start and now < reg_start:
-            return False
-        if reg_end and now > reg_end:
-            return False
-        return True
-
-    def get_created_at(self) -> datetime | None:
-        """Get the registration creation time."""
-        created_at = self.get_attribute("created_at")
-        if created_at:
-            return datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-        return None
-
-    def get_updated_at(self) -> datetime | None:
-        """Get the registration last update time."""
-        updated_at = self.get_attribute("updated_at")
-        if updated_at:
-            return datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
-        return None
-
-
-class PCORegistrationForm(PCOResource):
-    """Represents a registration form in Planning Center Registrations."""
+    def get_logo_url(self) -> str | None:
+        """Get URL for the image used for the signup."""
+        return self.get_attribute("logo_url")
 
     def get_name(self) -> str | None:
-        """Get the form name."""
+        """Get the name of the signup."""
         return self.get_attribute("name")
 
-    def get_description(self) -> str | None:
-        """Get the form description."""
-        return self.get_attribute("description")
+    def get_new_registration_url(self) -> str | None:
+        """Get URL to allow people to register for signup."""
+        return self.get_attribute("new_registration_url")
 
-    def get_created_at(self) -> datetime | None:
-        """Get the form creation time."""
-        created_at = self.get_attribute("created_at")
-        if created_at:
-            return datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-        return None
+    def get_open_at(self) -> str | None:
+        """Get UTC time at which registration opens."""
+        return self.get_attribute("open_at")
 
-    def get_updated_at(self) -> datetime | None:
-        """Get the form last update time."""
-        updated_at = self.get_attribute("updated_at")
-        if updated_at:
-            return datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
-        return None
+    def get_created_at(self) -> str | None:
+        """Get the creation timestamp."""
+        return self.get_attribute("created_at")
 
-    def get_registration_id(self) -> str | None:
-        """Get the registration ID."""
-        registration_data = self.get_relationship_data("registration")
-        if registration_data and isinstance(registration_data, dict):
-            return registration_data.get("id")
-        return None
+    def get_updated_at(self) -> str | None:
+        """Get the last update timestamp."""
+        return self.get_attribute("updated_at")
+
+    def get_attendees(self) -> list[dict[str, Any]] | None:
+        """Get associated attendees."""
+        return self.get_relationship("attendees")
+
+    def get_campuses(self) -> list[dict[str, Any]] | None:
+        """Get associated campuses."""
+        return self.get_relationship("campuses")
+
+    def get_categories(self) -> list[dict[str, Any]] | None:
+        """Get associated categories."""
+        return self.get_relationship("categories")
+
+    def get_next_signup_time(self) -> dict[str, Any] | None:
+        """Get the associated next signup time."""
+        return self.get_relationship("next_signup_time")
+
+    def get_signup_location(self) -> dict[str, Any] | None:
+        """Get the associated signup location."""
+        return self.get_relationship("signup_location")
+
+    def get_signup_times(self) -> list[dict[str, Any]] | None:
+        """Get associated signup times."""
+        return self.get_relationship("signup_times")
+
+    def get_registrations(self) -> list[dict[str, Any]] | None:
+        """Get associated registrations."""
+        return self.get_relationship("registrations")
+
+    def get_selection_types(self) -> list[dict[str, Any]] | None:
+        """Get associated selection types."""
+        return self.get_relationship("selection_types")
+
+    def get_organization(self) -> dict[str, Any] | None:
+        """Get the associated organization."""
+        return self.get_relationship("organization")
 
 
-class PCORegistrationFormField(PCOResource):
-    """Represents a registration form field in Planning Center Registrations."""
+class PCOSignupLocation(PCOResource):
+    """Represents a signup location in Planning Center Registrations."""
 
     def get_name(self) -> str | None:
-        """Get the field name."""
+        """Get the name of the signup location."""
         return self.get_attribute("name")
 
-    def get_field_type(self) -> str | None:
-        """Get the field type."""
-        return self.get_attribute("field_type")
+    def get_address_data(self) -> dict[str, Any] | None:
+        """Get the address data of the signup location."""
+        return self.get_attribute("address_data")
 
-    def get_required(self) -> bool:
-        """Check if the field is required."""
-        return self.get_attribute("required", False)
+    def get_subpremise(self) -> str | None:
+        """Get the subpremise of the signup location."""
+        return self.get_attribute("subpremise")
 
-    def get_order(self) -> int:
-        """Get the field order."""
-        return self.get_attribute("order", 0)
+    def get_latitude(self) -> str | None:
+        """Get the latitude of the signup location."""
+        return self.get_attribute("latitude")
 
-    def get_created_at(self) -> datetime | None:
-        """Get the field creation time."""
-        created_at = self.get_attribute("created_at")
-        if created_at:
-            return datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-        return None
+    def get_longitude(self) -> str | None:
+        """Get the longitude of the signup location."""
+        return self.get_attribute("longitude")
 
-    def get_updated_at(self) -> datetime | None:
-        """Get the field last update time."""
-        updated_at = self.get_attribute("updated_at")
-        if updated_at:
-            return datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
-        return None
+    def get_location_type(self) -> str | None:
+        """Get the type of location."""
+        return self.get_attribute("location_type")
 
-    def get_form_id(self) -> str | None:
-        """Get the form ID."""
-        form_data = self.get_relationship_data("form")
-        if form_data and isinstance(form_data, dict):
-            return form_data.get("id")
-        return None
+    def get_url(self) -> str | None:
+        """Get the URL for the signup location."""
+        return self.get_attribute("url")
 
+    def get_formatted_address(self) -> str | None:
+        """Get the formatted address of the signup location."""
+        return self.get_attribute("formatted_address")
 
-class PCORegistrationFormFieldOption(PCOResource):
-    """Represents a registration form field option in Planning Center Registrations."""
+    def get_full_formatted_address(self) -> str | None:
+        """Get the fully formatted address of the signup location."""
+        return self.get_attribute("full_formatted_address")
 
-    def get_name(self) -> str | None:
-        """Get the option name."""
-        return self.get_attribute("name")
+    def get_created_at(self) -> str | None:
+        """Get the creation timestamp."""
+        return self.get_attribute("created_at")
 
-    def get_value(self) -> str | None:
-        """Get the option value."""
-        return self.get_attribute("value")
+    def get_updated_at(self) -> str | None:
+        """Get the last update timestamp."""
+        return self.get_attribute("updated_at")
 
-    def get_order(self) -> int:
-        """Get the option order."""
-        return self.get_attribute("order", 0)
-
-    def get_created_at(self) -> datetime | None:
-        """Get the option creation time."""
-        created_at = self.get_attribute("created_at")
-        if created_at:
-            return datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-        return None
-
-    def get_updated_at(self) -> datetime | None:
-        """Get the option last update time."""
-        updated_at = self.get_attribute("updated_at")
-        if updated_at:
-            return datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
-        return None
-
-    def get_field_id(self) -> str | None:
-        """Get the field ID."""
-        field_data = self.get_relationship_data("field")
-        if field_data and isinstance(field_data, dict):
-            return field_data.get("id")
-        return None
+    def get_signup(self) -> dict[str, Any] | None:
+        """Get the associated signup."""
+        return self.get_relationship("signup")
 
 
-class PCORegistrationInstance(PCOResource):
-    """Represents a registration instance in Planning Center Registrations."""
+class PCOSignupTime(PCOResource):
+    """Represents a signup time in Planning Center Registrations."""
 
-    def get_starts_at(self) -> datetime | None:
-        """Get the registration instance start time."""
-        starts_at = self.get_attribute("starts_at")
-        if starts_at:
-            return datetime.fromisoformat(starts_at.replace("Z", "+00:00"))
-        return None
+    def get_starts_at(self) -> str | None:
+        """Get the start date and time of signup time."""
+        return self.get_attribute("starts_at")
 
-    def get_ends_at(self) -> datetime | None:
-        """Get the registration instance end time."""
-        ends_at = self.get_attribute("ends_at")
-        if ends_at:
-            return datetime.fromisoformat(ends_at.replace("Z", "+00:00"))
-        return None
+    def get_ends_at(self) -> str | None:
+        """Get the end date and time of signup time."""
+        return self.get_attribute("ends_at")
 
-    def get_capacity(self) -> int | None:
-        """Get the registration instance capacity."""
-        return self.get_attribute("capacity")
+    def get_all_day(self) -> bool | None:
+        """Get whether the signup time is all day."""
+        return self.get_attribute("all_day")
 
-    def get_registered_count(self) -> int:
-        """Get the number of registered people for this instance."""
-        return self.get_attribute("registered_count", 0)
+    def get_created_at(self) -> str | None:
+        """Get the creation timestamp."""
+        return self.get_attribute("created_at")
 
-    def get_available_spots(self) -> int | None:
-        """Get the number of available spots for this instance."""
-        capacity = self.get_capacity()
-        if capacity is not None:
-            return capacity - self.get_registered_count()
-        return None
+    def get_updated_at(self) -> str | None:
+        """Get the last update timestamp."""
+        return self.get_attribute("updated_at")
 
-    def get_created_at(self) -> datetime | None:
-        """Get the registration instance creation time."""
-        created_at = self.get_attribute("created_at")
-        if created_at:
-            return datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-        return None
-
-    def get_updated_at(self) -> datetime | None:
-        """Get the registration instance last update time."""
-        updated_at = self.get_attribute("updated_at")
-        if updated_at:
-            return datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
-        return None
-
-    def get_registration_id(self) -> str | None:
-        """Get the registration ID."""
-        registration_data = self.get_relationship_data("registration")
-        if registration_data and isinstance(registration_data, dict):
-            return registration_data.get("id")
-        return None
-
-
-class PCORegistrationInstancePerson(PCOResource):
-    """Represents a person registered for a registration instance."""
-
-    def get_first_name(self) -> str | None:
-        """Get the person's first name."""
-        return self.get_attribute("first_name")
-
-    def get_last_name(self) -> str | None:
-        """Get the person's last name."""
-        return self.get_attribute("last_name")
-
-    def get_full_name(self) -> str:
-        """Get the person's full name."""
-        first = self.get_first_name() or ""
-        last = self.get_last_name() or ""
-        return f"{first} {last}".strip()
-
-    def get_email(self) -> str | None:
-        """Get the person's email."""
-        return self.get_attribute("email")
-
-    def get_phone(self) -> str | None:
-        """Get the person's phone."""
-        return self.get_attribute("phone")
-
-    def get_registration_date(self) -> datetime | None:
-        """Get the registration date."""
-        reg_date = self.get_attribute("registration_date")
-        if reg_date:
-            return datetime.fromisoformat(reg_date.replace("Z", "+00:00"))
-        return None
-
-    def get_created_at(self) -> datetime | None:
-        """Get the registration creation time."""
-        created_at = self.get_attribute("created_at")
-        if created_at:
-            return datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-        return None
-
-    def get_updated_at(self) -> datetime | None:
-        """Get the registration last update time."""
-        updated_at = self.get_attribute("updated_at")
-        if updated_at:
-            return datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
-        return None
-
-    def get_registration_instance_id(self) -> str | None:
-        """Get the registration instance ID."""
-        instance_data = self.get_relationship_data("registration_instance")
-        if instance_data and isinstance(instance_data, dict):
-            return instance_data.get("id")
-        return None
-
-    def get_person_id(self) -> str | None:
-        """Get the person ID."""
-        person_data = self.get_relationship_data("person")
-        if person_data and isinstance(person_data, dict):
-            return person_data.get("id")
-        return None
-
-
-class PCORegistrationInstancePersonAnswer(PCOResource):
-    """Represents an answer to a registration form field."""
-
-    def get_value(self) -> Any:
-        """Get the answer value."""
-        return self.get_attribute("value")
-
-    def get_created_at(self) -> datetime | None:
-        """Get the answer creation time."""
-        created_at = self.get_attribute("created_at")
-        if created_at:
-            return datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-        return None
-
-    def get_updated_at(self) -> datetime | None:
-        """Get the answer last update time."""
-        updated_at = self.get_attribute("updated_at")
-        if updated_at:
-            return datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
-        return None
-
-    def get_registration_instance_person_id(self) -> str | None:
-        """Get the registration instance person ID."""
-        person_data = self.get_relationship_data("registration_instance_person")
-        if person_data and isinstance(person_data, dict):
-            return person_data.get("id")
-        return None
-
-    def get_field_id(self) -> str | None:
-        """Get the field ID."""
-        field_data = self.get_relationship_data("field")
-        if field_data and isinstance(field_data, dict):
-            return field_data.get("id")
-        return None
-
-
-class PCOAttendee(PCOResource):
-    """Represents an attendee in Planning Center Registrations."""
-
-    def get_first_name(self) -> str | None:
-        """Get the attendee's first name."""
-        return self.get_attribute("first_name")
-
-    def get_last_name(self) -> str | None:
-        """Get the attendee's last name."""
-        return self.get_attribute("last_name")
-
-    def get_full_name(self) -> str:
-        """Get the attendee's full name."""
-        first = self.get_first_name() or ""
-        last = self.get_last_name() or ""
-        return f"{first} {last}".strip()
-
-    def get_email(self) -> str | None:
-        """Get the attendee's email."""
-        return self.get_attribute("email")
-
-    def get_phone(self) -> str | None:
-        """Get the attendee's phone."""
-        return self.get_attribute("phone")
-
-    def get_attendance_status(self) -> str | None:
-        """Get the attendance status."""
-        return self.get_attribute("attendance_status")
-
-    def get_check_in_time(self) -> datetime | None:
-        """Get the check-in time."""
-        check_in_time = self.get_attribute("check_in_time")
-        if check_in_time:
-            return datetime.fromisoformat(check_in_time.replace("Z", "+00:00"))
-        return None
-
-    def get_check_out_time(self) -> datetime | None:
-        """Get the check-out time."""
-        check_out_time = self.get_attribute("check_out_time")
-        if check_out_time:
-            return datetime.fromisoformat(check_out_time.replace("Z", "+00:00"))
-        return None
-
-    def get_created_at(self) -> datetime | None:
-        """Get the attendee creation time."""
-        created_at = self.get_attribute("created_at")
-        if created_at:
-            return datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-        return None
-
-    def get_updated_at(self) -> datetime | None:
-        """Get the attendee last update time."""
-        updated_at = self.get_attribute("updated_at")
-        if updated_at:
-            return datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
-        return None
-
-    def get_event_id(self) -> str | None:
-        """Get the event ID."""
-        event_data = self.get_relationship_data("event")
-        if event_data and isinstance(event_data, dict):
-            return event_data.get("id")
-        return None
-
-    def get_registration_instance_id(self) -> str | None:
-        """Get the registration instance ID."""
-        reg_instance_data = self.get_relationship_data("registration_instance")
-        if reg_instance_data and isinstance(reg_instance_data, dict):
-            return reg_instance_data.get("id")
-        return None
-
-    def get_person_id(self) -> str | None:
-        """Get the person ID."""
-        person_data = self.get_relationship_data("person")
-        if person_data and isinstance(person_data, dict):
-            return person_data.get("id")
-        return None
-
-    def is_checked_in(self) -> bool:
-        """Check if the attendee is checked in."""
-        return self.get_attendance_status() == "checked_in"
-
-    def is_checked_out(self) -> bool:
-        """Check if the attendee is checked out."""
-        return self.get_attendance_status() == "checked_out"
-
-    def get_attendance_duration(self) -> int | None:
-        """Get the attendance duration in minutes."""
-        check_in = self.get_check_in_time()
-        check_out = self.get_check_out_time()
-
-        if check_in and check_out:
-            duration = check_out - check_in
-            return int(duration.total_seconds() / 60)
-        return None
+    def get_signup(self) -> dict[str, Any] | None:
+        """Get the associated signup."""
+        return self.get_relationship("signup")

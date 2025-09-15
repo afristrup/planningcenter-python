@@ -417,21 +417,21 @@ class TestFullAPIIntegration:
             PCOBaseModel,
             PCOResource,
         )
-        from planning_center_api.products.registrations import PCORegistrationEvent
+        from planning_center_api.products.registrations import PCOSignup
 
         # Test model instantiation
-        event_data = {
+        signup_data = {
             "id": "123",
-            "type": "events",
-            "attributes": {"name": "Test Event"},
+            "type": "signups",
+            "attributes": {"name": "Test Signup"},
         }
 
-        event = PCORegistrationEvent(**event_data)
+        signup = PCOSignup(**signup_data)
 
         # Test inheritance
-        assert isinstance(event, PCOResource)
-        assert isinstance(event, PCOBaseModel)
+        assert isinstance(signup, PCOResource)
+        assert isinstance(signup, PCOBaseModel)
 
         # Test basic functionality
-        assert event.id == "123"
-        assert event.get_name() == "Test Event"
+        assert signup.id == "123"
+        assert signup.get_name() == "Test Signup"

@@ -15,6 +15,7 @@ class PCOProduct(Enum):
     CALENDAR = "calendar"
     REGISTRATIONS = "registrations"
     ORGANIZATION = "organization"
+    WEBHOOKS = "webhooks"
 
 
 @dataclass
@@ -192,6 +193,16 @@ API_ENDPOINTS = {
             "personal_access_tokens": "personal_access_tokens",
         },
     },
+    PCOProduct.WEBHOOKS: {
+        "base": "webhooks/v2",
+        "resources": {
+            "webhook_subscriptions": "webhook_subscriptions",
+            "events": "events",
+            "deliveries": "deliveries",
+            "available_events": "available_events",
+            "organization": "",
+        },
+    },
 }
 
 # HTTP Status Codes
@@ -293,5 +304,16 @@ WEBHOOK_EVENTS = {
         "personal_access_tokens.created",
         "personal_access_tokens.updated",
         "personal_access_tokens.deleted",
+    ],
+    PCOProduct.WEBHOOKS: [
+        "webhook_subscriptions.created",
+        "webhook_subscriptions.updated",
+        "webhook_subscriptions.deleted",
+        "events.created",
+        "events.updated",
+        "events.deleted",
+        "deliveries.created",
+        "deliveries.updated",
+        "deliveries.deleted",
     ],
 }
