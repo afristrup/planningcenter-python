@@ -133,6 +133,47 @@ curl -X POST "http://localhost:8000/get_attendees" \
 
 Visit `http://localhost:8000/docs` to see the interactive Swagger UI documentation for all endpoints.
 
+## 🎭 Mock Server for Testing
+
+For development and testing without real API credentials, use the included mock server:
+
+```bash
+# Run the mock server
+python run_mock_server.py
+
+# Test the mock server
+python test_mock_server.py
+```
+
+The mock server provides:
+- **Realistic fake data** for all Planning Center resources
+- **Same API structure** as the real server
+- **No authentication required** for testing
+- **MCP integration** for AI assistant testing
+
+**Mock server runs on**: `http://localhost:8001`
+**Documentation**: See [MOCK_SERVER.md](MOCK_SERVER.md) for detailed information.
+
+## 🤖 Claude Desktop Integration
+
+The MCP servers are designed to work with Claude Desktop for AI assistant integration:
+
+### **Quick Setup (Mock Server)**
+1. Edit your Claude Desktop config: `%APPDATA%\Claude\claude_desktop_config.json`
+2. Add the mock server configuration (no credentials required)
+3. Restart Claude Desktop
+4. Start asking questions about Planning Center data!
+
+### **Available MCP Tools**
+- `get_people` - Get people with filtering
+- `get_services` - Get services
+- `get_plans` - Get plans
+- `get_registrations` - Get registrations
+- `get_attendees` - Get attendees
+- Plus individual item retrieval tools
+
+**Full setup guide**: See [CLAUDE_DESKTOP_SETUP.md](CLAUDE_DESKTOP_SETUP.md) for detailed instructions.
+
 ## API Reference
 
 ### Common Parameters

@@ -13,6 +13,7 @@ dependencies = [
     "fastapi-mcp>=0.4.0",
     "uvicorn>=0.24.0",
     "python-multipart>=0.0.6",
+    "mcp>=1.0.0",
     "planning-center-api @ file:///C:/Users/aksel/Documents/GitHub/planningcenter-wrapper/planning-center-api",
 ]
 

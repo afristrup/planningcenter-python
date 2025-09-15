@@ -72,3 +72,19 @@ curl -X POST "http://localhost:8000/get_people" \
   -H "Content-Type: application/json" \
   -d '{"per_page": 5}'
 ```
+
+## 🎭 Mock Server (No Credentials Required)
+
+For testing without real API credentials:
+
+```bash
+# Run the mock server
+python run_mock_server.py
+
+# Test the mock server
+python test_mock_server.py
+```
+
+**Mock server**: `http://localhost:8001`
+**MCP endpoint**: `http://localhost:8001/mcp`
+**Documentation**: `http://localhost:8001/docs`
