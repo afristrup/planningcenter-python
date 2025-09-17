@@ -1,10 +1,10 @@
 # Planning Center MCP Server
 
-A comprehensive Model Context Protocol (MCP) server that provides read-only access to **all major Planning Center APIs**. This server exposes Planning Center data through 65+ MCP tools, allowing AI assistants to interact with your Planning Center data safely across all products.
+A comprehensive Model Context Protocol (MCP) server that provides read-only access to **all major Planning Center APIs**. This server exposes Planning Center data through 80+ MCP tools, including advanced analytics and workflow tools, allowing AI assistants to interact with your Planning Center data safely across all products.
 
 ## 🚀 Features
 
-- **Comprehensive Coverage**: 65+ read-only tools across 9 Planning Center products
+- **Comprehensive Coverage**: 80+ read-only tools across 9 Planning Center products
 - **Native MCP Integration**: Built using the official MCP protocol for seamless AI assistant integration
 - **Read-only operations**: All endpoints are designed for data retrieval only, ensuring data safety
 - **Multiple Planning Center products**: Support for People, Services, Registrations, Giving, Groups, Calendar, Check-ins, Publishing, Webhooks, and Organization
@@ -12,11 +12,12 @@ A comprehensive Model Context Protocol (MCP) server that provides read-only acce
 - **Advanced filtering**: Comprehensive filtering options for all endpoints
 - **Pagination support**: Built-in pagination for large datasets
 - **Mock server included**: Full testing environment with realistic fake data
+- **Advanced Analytics**: 10+ specialized analytics tools for data-driven insights
 - **Claude Desktop ready**: Pre-configured for immediate use with Claude Desktop
 
 ## 📋 Available MCP Tools
 
-The server provides **65+ MCP tools** across all major Planning Center products:
+The server provides **80+ MCP tools** across all major Planning Center products:
 
 ### 👥 **People API** (15 tools)
 - `get_people` - Get people with filtering (search, status, gender, marital status)
@@ -82,11 +83,56 @@ The server provides **65+ MCP tools** across all major Planning Center products:
 - `get_calendar_events` - Get calendar events
 - `get_calendar_event` - Get specific calendar event
 
-### ✅ **Check-ins API** (4 tools)
+### ✅ **Check-ins API** (25+ tools)
+**Core Endpoints:**
 - `get_check_in_events` - Get check-in events
 - `get_check_in_event` - Get specific check-in event
 - `get_locations` - Get locations
 - `get_location` - Get specific location
+- `get_attendance_types` - Get attendance types
+- `get_attendance_type` - Get specific attendance type
+- `get_check_ins` - Get check-ins
+- `get_check_in` - Get specific check-in
+- `get_check_in_groups` - Get check-in groups
+- `get_check_in_group` - Get specific check-in group
+- `get_check_in_times` - Get check-in times
+- `get_check_in_time` - Get specific check-in time
+- `get_event_periods` - Get event periods
+- `get_event_period` - Get specific event period
+- `get_event_times` - Get event times
+- `get_event_time` - Get specific event time
+- `get_headcounts` - Get headcounts
+- `get_headcount` - Get specific headcount
+- `get_integration_links` - Get integration links
+- `get_integration_link` - Get specific integration link
+- `get_labels` - Get labels
+- `get_label` - Get specific label
+- `get_options` - Get options
+- `get_option` - Get specific option
+- `get_check_ins_organization` - Get organization
+- `get_passes` - Get passes
+- `get_pass` - Get specific pass
+- `get_check_ins_people` - Get people
+- `get_check_ins_person` - Get specific person
+- `get_person_events` - Get person events
+- `get_person_event` - Get specific person event
+- `get_stations` - Get stations
+- `get_station` - Get specific station
+- `get_themes` - Get themes
+- `get_theme` - Get specific theme
+
+**Advanced Analytics & Workflow Tools:**
+- `get_volunteer_count_for_date` - Get volunteer counts for specific dates
+- `get_attendance_summary_for_event` - Comprehensive event attendance analysis
+- `get_weekly_attendance_trends` - Attendance trends over time
+- `get_station_utilization_report` - Check-in station efficiency analysis
+- `get_family_check_in_patterns` - Family attendance analysis
+- `get_volunteer_availability_report` - Volunteer scheduling insights
+- `get_attendance_by_demographics` - Demographic breakdowns
+- `get_event_capacity_analysis` - Capacity utilization analysis
+- `get_check_in_efficiency_metrics` - Operational efficiency metrics
+- `get_volunteer_roster_for_date` - Complete volunteer rosters
+- `get_attendance_anomalies` - Unusual pattern detection
 
 ### 📺 **Publishing API** (4 tools)
 - `get_channels` - Get channels
@@ -103,6 +149,38 @@ The server provides **65+ MCP tools** across all major Planning Center products:
 - `get_connected_application` - Get specific connected application
 - `get_oauth_applications` - Get OAuth applications
 - `get_oauth_application` - Get specific OAuth application
+
+## 📊 Advanced Analytics & Workflow Tools
+
+The server includes **10+ specialized analytics tools** designed to answer common data-driven questions and support team workflows:
+
+### 🎯 **Volunteer Management**
+- **`get_volunteer_count_for_date`** - Answer "How many volunteers on a given Sunday?"
+- **`get_volunteer_roster_for_date`** - Get complete volunteer rosters with contact info
+- **`get_volunteer_availability_report`** - Analyze volunteer scheduling patterns
+
+### 📈 **Attendance Analytics**
+- **`get_attendance_summary_for_event`** - Comprehensive event attendance analysis
+- **`get_weekly_attendance_trends`** - Track attendance trends over time
+- **`get_attendance_by_demographics`** - Break down attendance by age, family status, location
+- **`get_attendance_anomalies`** - Detect unusual attendance patterns
+
+### 🏢 **Operational Insights**
+- **`get_station_utilization_report`** - Analyze check-in station efficiency
+- **`get_check_in_efficiency_metrics`** - Measure processing speed and bottlenecks
+- **`get_event_capacity_analysis`** - Identify overcrowding or underutilization
+
+### 👨‍👩‍👧‍👦 **Family & Community Analysis**
+- **`get_family_check_in_patterns`** - Understand family attendance dynamics
+
+### 💡 **Common Use Cases**
+These tools directly answer questions like:
+- "How many volunteers do we have this Sunday?"
+- "What's our attendance trend over the past month?"
+- "Which check-in stations are most efficient?"
+- "Are there any unusual attendance patterns we should investigate?"
+- "What's our family attendance breakdown?"
+- "How is our event capacity utilization?"
 
 ## 🚀 Quick Start
 

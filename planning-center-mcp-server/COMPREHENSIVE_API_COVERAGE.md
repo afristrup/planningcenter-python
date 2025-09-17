@@ -6,7 +6,7 @@ The Planning Center MCP servers now provide comprehensive coverage of all major 
 
 ## ✅ **Real Server Coverage** (`mcp_server_fixed.py`)
 
-The real server now includes **65+ read-only tools** covering all major Planning Center API endpoints:
+The real server now includes **80+ read-only tools** covering all major Planning Center API endpoints, including comprehensive Check-ins API coverage and advanced analytics tools:
 
 ### **People API** (15 tools)
 - `get_people` - Get people with filtering

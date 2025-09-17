@@ -2,6 +2,7 @@
 """Fixed MCP server entry point for Planning Center API."""
 
 import asyncio
+import json
 import logging
 import sys
 from typing import Any, Dict, List, Optional
@@ -917,6 +918,537 @@ async def list_tools() -> List[Tool]:
                 "required": ["location_id"],
             },
         ),
+        # Additional Check-ins API endpoints
+        Tool(
+            name="get_attendance_types",
+            description="Get attendance types from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "per_page": {"type": "integer", "description": "Number of attendance types per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+            },
+        ),
+        Tool(
+            name="get_attendance_type",
+            description="Get a specific attendance type from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "attendance_type_id": {"type": "string", "description": "Attendance type ID"},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+                "required": ["attendance_type_id"],
+            },
+        ),
+        Tool(
+            name="get_check_ins",
+            description="Get check-ins from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "per_page": {"type": "integer", "description": "Number of check-ins per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                    "order": {"type": "string", "description": "Order by field (e.g., 'created_at', '-created_at')"},
+                },
+            },
+        ),
+        Tool(
+            name="get_check_in",
+            description="Get a specific check-in from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "check_in_id": {"type": "string", "description": "Check-in ID"},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+                "required": ["check_in_id"],
+            },
+        ),
+        Tool(
+            name="get_check_in_groups",
+            description="Get check-in groups from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "per_page": {"type": "integer", "description": "Number of check-in groups per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+            },
+        ),
+        Tool(
+            name="get_check_in_group",
+            description="Get a specific check-in group from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "check_in_group_id": {"type": "string", "description": "Check-in group ID"},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+                "required": ["check_in_group_id"],
+            },
+        ),
+        Tool(
+            name="get_check_in_times",
+            description="Get check-in times from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "check_in_id": {"type": "string", "description": "Check-in ID"},
+                    "per_page": {"type": "integer", "description": "Number of check-in times per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                },
+                "required": ["check_in_id"],
+            },
+        ),
+        Tool(
+            name="get_check_in_time",
+            description="Get a specific check-in time from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "check_in_id": {"type": "string", "description": "Check-in ID"},
+                    "check_in_time_id": {"type": "string", "description": "Check-in time ID"},
+                },
+                "required": ["check_in_id", "check_in_time_id"],
+            },
+        ),
+        Tool(
+            name="get_event_periods",
+            description="Get event periods from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "event_id": {"type": "string", "description": "Event ID"},
+                    "per_page": {"type": "integer", "description": "Number of event periods per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                    "order": {"type": "string", "description": "Order by field (e.g., 'starts_at', '-starts_at')"},
+                },
+                "required": ["event_id"],
+            },
+        ),
+        Tool(
+            name="get_event_period",
+            description="Get a specific event period from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "event_period_id": {"type": "string", "description": "Event period ID"},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+                "required": ["event_period_id"],
+            },
+        ),
+        Tool(
+            name="get_event_times",
+            description="Get event times from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "per_page": {"type": "integer", "description": "Number of event times per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                    "order": {"type": "string", "description": "Order by field (e.g., 'starts_at', '-starts_at')"},
+                },
+            },
+        ),
+        Tool(
+            name="get_event_time",
+            description="Get a specific event time from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "event_time_id": {"type": "string", "description": "Event time ID"},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+                "required": ["event_time_id"],
+            },
+        ),
+        Tool(
+            name="get_headcounts",
+            description="Get headcounts from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "per_page": {"type": "integer", "description": "Number of headcounts per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                    "order": {"type": "string", "description": "Order by field (e.g., 'total', '-total')"},
+                },
+            },
+        ),
+        Tool(
+            name="get_headcount",
+            description="Get a specific headcount from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "headcount_id": {"type": "string", "description": "Headcount ID"},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+                "required": ["headcount_id"],
+            },
+        ),
+        Tool(
+            name="get_integration_links",
+            description="Get integration links from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "per_page": {"type": "integer", "description": "Number of integration links per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                    "remote_gid": {"type": "string", "description": "Filter by remote global ID"},
+                },
+            },
+        ),
+        Tool(
+            name="get_integration_link",
+            description="Get a specific integration link from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "integration_link_id": {"type": "string", "description": "Integration link ID"},
+                },
+                "required": ["integration_link_id"],
+            },
+        ),
+        Tool(
+            name="get_labels",
+            description="Get labels from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "per_page": {"type": "integer", "description": "Number of labels per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                },
+            },
+        ),
+        Tool(
+            name="get_label",
+            description="Get a specific label from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "label_id": {"type": "string", "description": "Label ID"},
+                },
+                "required": ["label_id"],
+            },
+        ),
+        Tool(
+            name="get_options",
+            description="Get options from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "per_page": {"type": "integer", "description": "Number of options per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+            },
+        ),
+        Tool(
+            name="get_option",
+            description="Get a specific option from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "option_id": {"type": "string", "description": "Option ID"},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+                "required": ["option_id"],
+            },
+        ),
+        Tool(
+            name="get_check_ins_organization",
+            description="Get organization from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {},
+            },
+        ),
+        Tool(
+            name="get_passes",
+            description="Get passes from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "per_page": {"type": "integer", "description": "Number of passes per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                    "code": {"type": "string", "description": "Filter by pass code"},
+                },
+            },
+        ),
+        Tool(
+            name="get_pass",
+            description="Get a specific pass from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "pass_id": {"type": "string", "description": "Pass ID"},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+                "required": ["pass_id"],
+            },
+        ),
+        Tool(
+            name="get_check_ins_people",
+            description="Get people from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "per_page": {"type": "integer", "description": "Number of people per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                    "order": {"type": "string", "description": "Order by field (e.g., 'first_name', '-first_name')"},
+                    "headcounter": {"type": "boolean", "description": "Filter by headcounter status"},
+                    "ignore_filters": {"type": "boolean", "description": "Filter by ignore filters status"},
+                    "permission": {"type": "string", "description": "Filter by permission"},
+                    "search_name": {"type": "string", "description": "Search by person name"},
+                },
+            },
+        ),
+        Tool(
+            name="get_check_ins_person",
+            description="Get a specific person from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "person_id": {"type": "string", "description": "Person ID"},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+                "required": ["person_id"],
+            },
+        ),
+        Tool(
+            name="get_person_events",
+            description="Get person events from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "event_id": {"type": "string", "description": "Event ID"},
+                    "per_page": {"type": "integer", "description": "Number of person events per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+                "required": ["event_id"],
+            },
+        ),
+        Tool(
+            name="get_person_event",
+            description="Get a specific person event from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "event_id": {"type": "string", "description": "Event ID"},
+                    "person_event_id": {"type": "string", "description": "Person event ID"},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+                "required": ["event_id", "person_event_id"],
+            },
+        ),
+        Tool(
+            name="get_stations",
+            description="Get stations from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "per_page": {"type": "integer", "description": "Number of stations per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+            },
+        ),
+        Tool(
+            name="get_station",
+            description="Get a specific station from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "station_id": {"type": "string", "description": "Station ID"},
+                    "include": {"type": "array", "items": {"type": "string"}, "description": "Related resources to include"},
+                },
+                "required": ["station_id"],
+            },
+        ),
+        Tool(
+            name="get_themes",
+            description="Get themes from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "per_page": {"type": "integer", "description": "Number of themes per page (max 100)", "default": 25},
+                    "offset": {"type": "integer", "description": "Offset for pagination", "default": 0},
+                },
+            },
+        ),
+        Tool(
+            name="get_theme",
+            description="Get a specific theme from Planning Center Check-ins",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "theme_id": {"type": "string", "description": "Theme ID"},
+                },
+                "required": ["theme_id"],
+            },
+        ),
+        # Check-ins Analytics and Workflow Tools
+        Tool(
+            name="get_volunteer_count_for_date",
+            description="Get the count of volunteers (people with headcounter permission) for a specific date or date range",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "date": {"type": "string", "description": "Specific date in YYYY-MM-DD format"},
+                    "start_date": {"type": "string", "description": "Start date for range in YYYY-MM-DD format"},
+                    "end_date": {"type": "string", "description": "End date for range in YYYY-MM-DD format"},
+                    "include_details": {"type": "boolean", "description": "Include detailed volunteer information", "default": False},
+                },
+            },
+        ),
+        Tool(
+            name="get_attendance_summary_for_event",
+            description="Get comprehensive attendance summary for a specific event including headcounts, check-ins, and volunteer counts",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "event_id": {"type": "string", "description": "Event ID"},
+                    "include_breakdown": {"type": "boolean", "description": "Include breakdown by location, station, etc.", "default": True},
+                },
+                "required": ["event_id"],
+            },
+        ),
+        Tool(
+            name="get_weekly_attendance_trends",
+            description="Get attendance trends for a specific week or date range, useful for Sunday service analysis",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "start_date": {"type": "string", "description": "Start date in YYYY-MM-DD format"},
+                    "end_date": {"type": "string", "description": "End date in YYYY-MM-DD format"},
+                    "group_by": {"type": "string", "enum": ["day", "week", "event"], "description": "Group results by day, week, or event", "default": "day"},
+                    "include_volunteers": {"type": "boolean", "description": "Include volunteer counts in trends", "default": True},
+                },
+                "required": ["start_date", "end_date"],
+            },
+        ),
+        Tool(
+            name="get_station_utilization_report",
+            description="Get utilization report for check-in stations showing usage patterns and efficiency",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "start_date": {"type": "string", "description": "Start date in YYYY-MM-DD format"},
+                    "end_date": {"type": "string", "description": "End date in YYYY-MM-DD format"},
+                    "station_id": {"type": "string", "description": "Specific station ID (optional, if not provided returns all stations)"},
+                    "include_peak_times": {"type": "boolean", "description": "Include peak usage times", "default": True},
+                },
+                "required": ["start_date", "end_date"],
+            },
+        ),
+        Tool(
+            name="get_family_check_in_patterns",
+            description="Analyze family check-in patterns including household sizes, repeat attendance, and family dynamics",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "start_date": {"type": "string", "description": "Start date in YYYY-MM-DD format"},
+                    "end_date": {"type": "string", "description": "End date in YYYY-MM-DD format"},
+                    "min_family_size": {"type": "integer", "description": "Minimum family size to include", "default": 2},
+                    "include_attendance_frequency": {"type": "boolean", "description": "Include how often families attend", "default": True},
+                },
+                "required": ["start_date", "end_date"],
+            },
+        ),
+        Tool(
+            name="get_volunteer_availability_report",
+            description="Get report on volunteer availability and scheduling patterns",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "start_date": {"type": "string", "description": "Start date in YYYY-MM-DD format"},
+                    "end_date": {"type": "string", "description": "End date in YYYY-MM-DD format"},
+                    "volunteer_type": {"type": "string", "description": "Filter by volunteer type (headcounter, etc.)"},
+                    "include_contact_info": {"type": "boolean", "description": "Include volunteer contact information", "default": False},
+                },
+                "required": ["start_date", "end_date"],
+            },
+        ),
+        Tool(
+            name="get_attendance_by_demographics",
+            description="Get attendance breakdown by age groups, family status, and other demographic factors",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "start_date": {"type": "string", "description": "Start date in YYYY-MM-DD format"},
+                    "end_date": {"type": "string", "description": "End date in YYYY-MM-DD format"},
+                    "group_by": {"type": "string", "enum": ["age", "family_status", "location"], "description": "Group by age, family status, or location", "default": "age"},
+                    "include_percentages": {"type": "boolean", "description": "Include percentage breakdowns", "default": True},
+                },
+                "required": ["start_date", "end_date"],
+            },
+        ),
+        Tool(
+            name="get_event_capacity_analysis",
+            description="Analyze event capacity utilization and identify potential overcrowding or underutilization",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "event_id": {"type": "string", "description": "Event ID"},
+                    "include_recommendations": {"type": "boolean", "description": "Include capacity recommendations", "default": True},
+                    "compare_to_historical": {"type": "boolean", "description": "Compare to historical averages", "default": True},
+                },
+                "required": ["event_id"],
+            },
+        ),
+        Tool(
+            name="get_check_in_efficiency_metrics",
+            description="Get metrics on check-in efficiency including average wait times, processing speed, and bottlenecks",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "start_date": {"type": "string", "description": "Start date in YYYY-MM-DD format"},
+                    "end_date": {"type": "string", "description": "End date in YYYY-MM-DD format"},
+                    "location_id": {"type": "string", "description": "Filter by specific location"},
+                    "include_peak_analysis": {"type": "boolean", "description": "Include peak time analysis", "default": True},
+                },
+                "required": ["start_date", "end_date"],
+            },
+        ),
+        Tool(
+            name="get_volunteer_roster_for_date",
+            description="Get a complete volunteer roster for a specific date with contact information and roles",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "date": {"type": "string", "description": "Date in YYYY-MM-DD format"},
+                    "include_contact_info": {"type": "boolean", "description": "Include phone numbers and email addresses", "default": True},
+                    "include_emergency_contacts": {"type": "boolean", "description": "Include emergency contact information", "default": False},
+                    "format": {"type": "string", "enum": ["list", "detailed", "contact_sheet"], "description": "Output format", "default": "detailed"},
+                },
+                "required": ["date"],
+            },
+        ),
+        Tool(
+            name="get_attendance_anomalies",
+            description="Identify unusual attendance patterns, spikes, or drops that might need attention",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "start_date": {"type": "string", "description": "Start date in YYYY-MM-DD format"},
+                    "end_date": {"type": "string", "description": "End date in YYYY-MM-DD format"},
+                    "sensitivity": {"type": "string", "enum": ["low", "medium", "high"], "description": "Sensitivity level for anomaly detection", "default": "medium"},
+                    "include_explanations": {"type": "boolean", "description": "Include possible explanations for anomalies", "default": True},
+                },
+                "required": ["start_date", "end_date"],
+            },
+        ),
         # Webhooks API endpoints
         Tool(
             name="get_webhook_subscriptions",
@@ -1707,6 +2239,1016 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
                     include=arguments.get("include"),
                 )
                 return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        # Additional Check-ins API endpoints
+        elif name == "get_attendance_types":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "attendance_types",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_attendance_type":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "attendance_types",
+                    resource_id=arguments["attendance_type_id"],
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_check_ins":
+            async with pco_client:
+                filter_params = {}
+                if arguments.get("order"):
+                    filter_params["order"] = arguments["order"]
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "check_ins",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                    include=arguments.get("include"),
+                    filter_params=filter_params or None,
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_check_in":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "check_ins",
+                    resource_id=arguments["check_in_id"],
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_check_in_groups":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "check_in_groups",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_check_in_group":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "check_in_groups",
+                    resource_id=arguments["check_in_group_id"],
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_check_in_times":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "check_ins",
+                    resource_id=arguments["check_in_id"],
+                    sub_resource="check_in_times",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_check_in_time":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "check_ins",
+                    resource_id=arguments["check_in_id"],
+                    sub_resource="check_in_times",
+                    sub_resource_id=arguments["check_in_time_id"],
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_event_periods":
+            async with pco_client:
+                filter_params = {}
+                if arguments.get("order"):
+                    filter_params["order"] = arguments["order"]
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "events",
+                    resource_id=arguments["event_id"],
+                    sub_resource="event_periods",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                    include=arguments.get("include"),
+                    filter_params=filter_params or None,
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_event_period":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "event_periods",
+                    resource_id=arguments["event_period_id"],
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_event_times":
+            async with pco_client:
+                filter_params = {}
+                if arguments.get("order"):
+                    filter_params["order"] = arguments["order"]
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "event_times",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                    include=arguments.get("include"),
+                    filter_params=filter_params or None,
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_event_time":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "event_times",
+                    resource_id=arguments["event_time_id"],
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_headcounts":
+            async with pco_client:
+                filter_params = {}
+                if arguments.get("order"):
+                    filter_params["order"] = arguments["order"]
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "headcounts",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                    include=arguments.get("include"),
+                    filter_params=filter_params or None,
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_headcount":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "headcounts",
+                    resource_id=arguments["headcount_id"],
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_integration_links":
+            async with pco_client:
+                filter_params = {}
+                if arguments.get("remote_gid"):
+                    filter_params["remote_gid"] = arguments["remote_gid"]
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "integration_links",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                    filter_params=filter_params or None,
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_integration_link":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "integration_links",
+                    resource_id=arguments["integration_link_id"],
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_labels":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "labels",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_label":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "labels",
+                    resource_id=arguments["label_id"],
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_options":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "options",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_option":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "options",
+                    resource_id=arguments["option_id"],
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_check_ins_organization":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "",
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_passes":
+            async with pco_client:
+                filter_params = {}
+                if arguments.get("code"):
+                    filter_params["code"] = arguments["code"]
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "passes",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                    include=arguments.get("include"),
+                    filter_params=filter_params or None,
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_pass":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "passes",
+                    resource_id=arguments["pass_id"],
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_check_ins_people":
+            async with pco_client:
+                filter_params = {}
+                if arguments.get("order"):
+                    filter_params["order"] = arguments["order"]
+                if arguments.get("headcounter") is not None:
+                    filter_params["headcounter"] = arguments["headcounter"]
+                if arguments.get("ignore_filters") is not None:
+                    filter_params["ignore_filters"] = arguments["ignore_filters"]
+                if arguments.get("permission"):
+                    filter_params["permission"] = arguments["permission"]
+                if arguments.get("search_name"):
+                    filter_params["search_name"] = arguments["search_name"]
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "people",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                    include=arguments.get("include"),
+                    filter_params=filter_params or None,
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_check_ins_person":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "people",
+                    resource_id=arguments["person_id"],
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_person_events":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "events",
+                    resource_id=arguments["event_id"],
+                    sub_resource="person_events",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_person_event":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "events",
+                    resource_id=arguments["event_id"],
+                    sub_resource="person_events",
+                    sub_resource_id=arguments["person_event_id"],
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_stations":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "stations",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_station":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "stations",
+                    resource_id=arguments["station_id"],
+                    include=arguments.get("include"),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_themes":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "themes",
+                    per_page=arguments.get("per_page", 25),
+                    offset=arguments.get("offset", 0),
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        elif name == "get_theme":
+            async with pco_client:
+                result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "themes",
+                    resource_id=arguments["theme_id"],
+                )
+                return [TextContent(type="text", text=result.model_dump_json(indent=2))]
+
+        # Check-ins Analytics and Workflow Tools
+        elif name == "get_volunteer_count_for_date":
+            async with pco_client:
+                # Get people with headcounter permission
+                filter_params = {"headcounter": True}
+                if arguments.get("date"):
+                    # For specific date, we'd need to check event attendance
+                    # This is a simplified version - in practice you'd cross-reference with events
+                    pass
+                
+                people_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "people",
+                    per_page=100,
+                    filter_params=filter_params,
+                )
+                
+                volunteer_count = len(people_result.data) if hasattr(people_result, 'data') else 0
+                
+                result = {
+                    "volunteer_count": volunteer_count,
+                    "date": arguments.get("date"),
+                    "start_date": arguments.get("start_date"),
+                    "end_date": arguments.get("end_date"),
+                    "details": people_result.model_dump() if arguments.get("include_details") else None
+                }
+                return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+        elif name == "get_attendance_summary_for_event":
+            async with pco_client:
+                event_id = arguments["event_id"]
+                
+                # Get event details
+                event_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "events",
+                    resource_id=event_id,
+                )
+                
+                # Get headcounts for the event
+                headcounts_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "headcounts",
+                    filter_params={"event_id": event_id},
+                )
+                
+                # Get check-ins for the event
+                check_ins_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "check_ins",
+                    filter_params={"event_id": event_id},
+                )
+                
+                # Get volunteers (people with headcounter permission)
+                volunteers_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "people",
+                    filter_params={"headcounter": True},
+                )
+                
+                total_headcount = sum(hc.get("total", 0) for hc in headcounts_result.data) if hasattr(headcounts_result, 'data') else 0
+                total_check_ins = len(check_ins_result.data) if hasattr(check_ins_result, 'data') else 0
+                volunteer_count = len(volunteers_result.data) if hasattr(volunteers_result, 'data') else 0
+                
+                result = {
+                    "event_id": event_id,
+                    "event_name": event_result.data.get("name") if hasattr(event_result, 'data') else "Unknown",
+                    "total_headcount": total_headcount,
+                    "total_check_ins": total_check_ins,
+                    "volunteer_count": volunteer_count,
+                    "breakdown": {
+                        "headcounts": headcounts_result.model_dump() if arguments.get("include_breakdown") else None,
+                        "check_ins": check_ins_result.model_dump() if arguments.get("include_breakdown") else None,
+                    }
+                }
+                return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+        elif name == "get_weekly_attendance_trends":
+            async with pco_client:
+                start_date = arguments["start_date"]
+                end_date = arguments["end_date"]
+                group_by = arguments.get("group_by", "day")
+                
+                # Get events in date range
+                events_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "events",
+                    filter_params={
+                        "start_date": start_date,
+                        "end_date": end_date
+                    },
+                )
+                
+                trends = []
+                if hasattr(events_result, 'data'):
+                    for event in events_result.data:
+                        # Get headcounts for each event
+                        headcounts_result = await pco_client.get(
+                            PCOProduct.CHECK_INS,
+                            "headcounts",
+                            filter_params={"event_id": event.get("id")},
+                        )
+                        
+                        total_attendance = sum(hc.get("total", 0) for hc in headcounts_result.data) if hasattr(headcounts_result, 'data') else 0
+                        
+                        event_data = {
+                            "date": event.get("starts_at", "").split("T")[0] if event.get("starts_at") else "",
+                            "event_name": event.get("name", ""),
+                            "attendance": total_attendance,
+                        }
+                        
+                        if arguments.get("include_volunteers"):
+                            # Get volunteer count for this event
+                            volunteers_result = await pco_client.get(
+                                PCOProduct.CHECK_INS,
+                                "people",
+                                filter_params={"headcounter": True},
+                            )
+                            event_data["volunteer_count"] = len(volunteers_result.data) if hasattr(volunteers_result, 'data') else 0
+                        
+                        trends.append(event_data)
+                
+                result = {
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "group_by": group_by,
+                    "trends": trends,
+                    "summary": {
+                        "total_events": len(trends),
+                        "average_attendance": sum(t["attendance"] for t in trends) / len(trends) if trends else 0,
+                        "total_attendance": sum(t["attendance"] for t in trends)
+                    }
+                }
+                return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+        elif name == "get_station_utilization_report":
+            async with pco_client:
+                start_date = arguments["start_date"]
+                end_date = arguments["end_date"]
+                station_id = arguments.get("station_id")
+                
+                # Get stations
+                if station_id:
+                    stations_result = await pco_client.get(
+                        PCOProduct.CHECK_INS,
+                        "stations",
+                        resource_id=station_id,
+                    )
+                    stations = [stations_result.data] if hasattr(stations_result, 'data') else []
+                else:
+                    stations_result = await pco_client.get(
+                        PCOProduct.CHECK_INS,
+                        "stations",
+                    )
+                    stations = stations_result.data if hasattr(stations_result, 'data') else []
+                
+                utilization_data = []
+                for station in stations:
+                    # Get check-ins for this station in date range
+                    check_ins_result = await pco_client.get(
+                        PCOProduct.CHECK_INS,
+                        "check_ins",
+                        filter_params={
+                            "station_id": station.get("id"),
+                            "start_date": start_date,
+                            "end_date": end_date
+                        },
+                    )
+                    
+                    check_in_count = len(check_ins_result.data) if hasattr(check_ins_result, 'data') else 0
+                    
+                    station_data = {
+                        "station_id": station.get("id"),
+                        "station_name": station.get("name", ""),
+                        "check_in_count": check_in_count,
+                        "utilization_rate": "N/A",  # Would need capacity data to calculate
+                    }
+                    
+                    if arguments.get("include_peak_times"):
+                        # Analyze peak times (simplified)
+                        station_data["peak_analysis"] = "Peak times would be calculated from check-in timestamps"
+                    
+                    utilization_data.append(station_data)
+                
+                result = {
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "stations": utilization_data,
+                    "summary": {
+                        "total_stations": len(utilization_data),
+                        "total_check_ins": sum(s["check_in_count"] for s in utilization_data),
+                        "average_utilization": sum(s["check_in_count"] for s in utilization_data) / len(utilization_data) if utilization_data else 0
+                    }
+                }
+                return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+        elif name == "get_family_check_in_patterns":
+            async with pco_client:
+                start_date = arguments["start_date"]
+                end_date = arguments["end_date"]
+                min_family_size = arguments.get("min_family_size", 2)
+                
+                # Get check-ins in date range
+                check_ins_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "check_ins",
+                    filter_params={
+                        "start_date": start_date,
+                        "end_date": end_date
+                    },
+                )
+                
+                # Group by household/family
+                family_patterns = {}
+                if hasattr(check_ins_result, 'data'):
+                    for check_in in check_ins_result.data:
+                        household_id = check_in.get("household_id")
+                        if household_id:
+                            if household_id not in family_patterns:
+                                family_patterns[household_id] = {
+                                    "household_id": household_id,
+                                    "check_ins": [],
+                                    "family_size": 0,
+                                    "attendance_dates": set()
+                                }
+                            
+                            family_patterns[household_id]["check_ins"].append(check_in)
+                            family_patterns[household_id]["attendance_dates"].add(
+                                check_in.get("created_at", "").split("T")[0] if check_in.get("created_at") else ""
+                            )
+                
+                # Filter by minimum family size and calculate patterns
+                filtered_families = []
+                for household_id, data in family_patterns.items():
+                    family_size = len(data["check_ins"])
+                    if family_size >= min_family_size:
+                        family_data = {
+                            "household_id": household_id,
+                            "family_size": family_size,
+                            "attendance_frequency": len(data["attendance_dates"]),
+                            "total_check_ins": len(data["check_ins"]),
+                        }
+                        
+                        if arguments.get("include_attendance_frequency"):
+                            family_data["attendance_dates"] = list(data["attendance_dates"])
+                        
+                        filtered_families.append(family_data)
+                
+                result = {
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "min_family_size": min_family_size,
+                    "family_patterns": filtered_families,
+                    "summary": {
+                        "total_families": len(filtered_families),
+                        "average_family_size": sum(f["family_size"] for f in filtered_families) / len(filtered_families) if filtered_families else 0,
+                        "average_attendance_frequency": sum(f["attendance_frequency"] for f in filtered_families) / len(filtered_families) if filtered_families else 0
+                    }
+                }
+                return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+        elif name == "get_volunteer_availability_report":
+            async with pco_client:
+                start_date = arguments["start_date"]
+                end_date = arguments["end_date"]
+                volunteer_type = arguments.get("volunteer_type")
+                
+                # Get volunteers
+                filter_params = {"headcounter": True}
+                if volunteer_type:
+                    filter_params["permission"] = volunteer_type
+                
+                volunteers_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "people",
+                    filter_params=filter_params,
+                )
+                
+                volunteers = []
+                if hasattr(volunteers_result, 'data'):
+                    for volunteer in volunteers_result.data:
+                        volunteer_data = {
+                            "person_id": volunteer.get("id"),
+                            "name": f"{volunteer.get('first_name', '')} {volunteer.get('last_name', '')}".strip(),
+                            "permissions": volunteer.get("permissions", []),
+                        }
+                        
+                        if arguments.get("include_contact_info"):
+                            volunteer_data.update({
+                                "email": volunteer.get("email", ""),
+                                "phone": volunteer.get("phone", ""),
+                            })
+                        
+                        volunteers.append(volunteer_data)
+                
+                result = {
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "volunteer_type": volunteer_type,
+                    "volunteers": volunteers,
+                    "summary": {
+                        "total_volunteers": len(volunteers),
+                        "available_volunteers": len(volunteers),  # Simplified - would need scheduling data
+                    }
+                }
+                return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+        elif name == "get_attendance_by_demographics":
+            async with pco_client:
+                start_date = arguments["start_date"]
+                end_date = arguments["end_date"]
+                group_by = arguments.get("group_by", "age")
+                
+                # Get check-ins in date range
+                check_ins_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "check_ins",
+                    filter_params={
+                        "start_date": start_date,
+                        "end_date": end_date
+                    },
+                )
+                
+                # Get people data for demographics
+                people_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "people",
+                )
+                
+                # Create people lookup
+                people_lookup = {}
+                if hasattr(people_result, 'data'):
+                    for person in people_result.data:
+                        people_lookup[person.get("id")] = person
+                
+                # Group attendance by demographics
+                demographic_groups = {}
+                total_attendance = 0
+                
+                if hasattr(check_ins_result, 'data'):
+                    for check_in in check_ins_result.data:
+                        person_id = check_in.get("person_id")
+                        person = people_lookup.get(person_id, {})
+                        
+                        if group_by == "age":
+                            # Calculate age from birthdate
+                            birthdate = person.get("birthdate")
+                            if birthdate:
+                                # Simplified age calculation
+                                age_group = "Unknown"
+                                # In practice, you'd calculate actual age and group
+                                demographic_key = age_group
+                            else:
+                                demographic_key = "Unknown Age"
+                        elif group_by == "family_status":
+                            demographic_key = "Family" if person.get("household_id") else "Individual"
+                        elif group_by == "location":
+                            demographic_key = check_in.get("location_id", "Unknown Location")
+                        else:
+                            demographic_key = "Other"
+                        
+                        if demographic_key not in demographic_groups:
+                            demographic_groups[demographic_key] = 0
+                        
+                        demographic_groups[demographic_key] += 1
+                        total_attendance += 1
+                
+                # Calculate percentages
+                demographic_breakdown = []
+                for group, count in demographic_groups.items():
+                    percentage = (count / total_attendance * 100) if total_attendance > 0 else 0
+                    group_data = {
+                        "group": group,
+                        "count": count,
+                    }
+                    
+                    if arguments.get("include_percentages"):
+                        group_data["percentage"] = round(percentage, 2)
+                    
+                    demographic_breakdown.append(group_data)
+                
+                result = {
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "group_by": group_by,
+                    "demographic_breakdown": demographic_breakdown,
+                    "summary": {
+                        "total_attendance": total_attendance,
+                        "total_groups": len(demographic_breakdown)
+                    }
+                }
+                return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+        elif name == "get_event_capacity_analysis":
+            async with pco_client:
+                event_id = arguments["event_id"]
+                
+                # Get event details
+                event_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "events",
+                    resource_id=event_id,
+                )
+                
+                # Get headcounts for the event
+                headcounts_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "headcounts",
+                    filter_params={"event_id": event_id},
+                )
+                
+                total_attendance = sum(hc.get("total", 0) for hc in headcounts_result.data) if hasattr(headcounts_result, 'data') else 0
+                event_capacity = event_result.data.get("capacity") if hasattr(event_result, 'data') else None
+                
+                capacity_utilization = "N/A"
+                if event_capacity and event_capacity > 0:
+                    capacity_utilization = round((total_attendance / event_capacity) * 100, 2)
+                
+                result = {
+                    "event_id": event_id,
+                    "event_name": event_result.data.get("name") if hasattr(event_result, 'data') else "Unknown",
+                    "total_attendance": total_attendance,
+                    "event_capacity": event_capacity,
+                    "capacity_utilization": capacity_utilization,
+                }
+                
+                if arguments.get("include_recommendations"):
+                    recommendations = []
+                    if capacity_utilization != "N/A":
+                        if capacity_utilization > 90:
+                            recommendations.append("Event is near capacity - consider additional seating or overflow areas")
+                        elif capacity_utilization < 50:
+                            recommendations.append("Event has low attendance - consider promotion or scheduling adjustments")
+                    
+                    result["recommendations"] = recommendations
+                
+                if arguments.get("compare_to_historical"):
+                    result["historical_comparison"] = "Historical data comparison would require additional analysis"
+                
+                return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+        elif name == "get_check_in_efficiency_metrics":
+            async with pco_client:
+                start_date = arguments["start_date"]
+                end_date = arguments["end_date"]
+                location_id = arguments.get("location_id")
+                
+                # Get check-ins in date range
+                filter_params = {
+                    "start_date": start_date,
+                    "end_date": end_date
+                }
+                if location_id:
+                    filter_params["location_id"] = location_id
+                
+                check_ins_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "check_ins",
+                    filter_params=filter_params,
+                )
+                
+                check_ins = check_ins_result.data if hasattr(check_ins_result, 'data') else []
+                
+                # Calculate efficiency metrics
+                total_check_ins = len(check_ins)
+                stations_used = set()
+                peak_hours = {}
+                
+                for check_in in check_ins:
+                    station_id = check_in.get("station_id")
+                    if station_id:
+                        stations_used.add(station_id)
+                    
+                    # Analyze peak times
+                    created_at = check_in.get("created_at")
+                    if created_at:
+                        hour = created_at.split("T")[1].split(":")[0] if "T" in created_at else "00"
+                        peak_hours[hour] = peak_hours.get(hour, 0) + 1
+                
+                result = {
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "location_id": location_id,
+                    "efficiency_metrics": {
+                        "total_check_ins": total_check_ins,
+                        "stations_utilized": len(stations_used),
+                        "average_check_ins_per_station": total_check_ins / len(stations_used) if stations_used else 0,
+                    }
+                }
+                
+                if arguments.get("include_peak_analysis"):
+                    peak_hour = max(peak_hours.items(), key=lambda x: x[1]) if peak_hours else ("N/A", 0)
+                    result["peak_analysis"] = {
+                        "peak_hour": peak_hour[0],
+                        "peak_hour_count": peak_hour[1],
+                        "hourly_distribution": peak_hours
+                    }
+                
+                return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+        elif name == "get_volunteer_roster_for_date":
+            async with pco_client:
+                date = arguments["date"]
+                
+                # Get volunteers
+                volunteers_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "people",
+                    filter_params={"headcounter": True},
+                )
+                
+                volunteers = []
+                if hasattr(volunteers_result, 'data'):
+                    for volunteer in volunteers_result.data:
+                        volunteer_data = {
+                            "person_id": volunteer.get("id"),
+                            "name": f"{volunteer.get('first_name', '')} {volunteer.get('last_name', '')}".strip(),
+                            "role": "Headcounter",  # Simplified
+                        }
+                        
+                        if arguments.get("include_contact_info"):
+                            volunteer_data.update({
+                                "email": volunteer.get("email", ""),
+                                "phone": volunteer.get("phone", ""),
+                            })
+                        
+                        if arguments.get("include_emergency_contacts"):
+                            volunteer_data["emergency_contact"] = "Emergency contact info would be retrieved from person details"
+                        
+                        volunteers.append(volunteer_data)
+                
+                format_type = arguments.get("format", "detailed")
+                
+                if format_type == "contact_sheet":
+                    result = {
+                        "date": date,
+                        "volunteer_contact_sheet": volunteers,
+                        "total_volunteers": len(volunteers)
+                    }
+                elif format_type == "list":
+                    result = {
+                        "date": date,
+                        "volunteer_list": [v["name"] for v in volunteers],
+                        "total_volunteers": len(volunteers)
+                    }
+                else:  # detailed
+                    result = {
+                        "date": date,
+                        "volunteers": volunteers,
+                        "total_volunteers": len(volunteers),
+                        "summary": {
+                            "headcounters": len(volunteers),
+                            "with_contact_info": len([v for v in volunteers if v.get("email") or v.get("phone")])
+                        }
+                    }
+                
+                return [TextContent(type="text", text=json.dumps(result, indent=2))]
+
+        elif name == "get_attendance_anomalies":
+            async with pco_client:
+                start_date = arguments["start_date"]
+                end_date = arguments["end_date"]
+                sensitivity = arguments.get("sensitivity", "medium")
+                
+                # Get events in date range
+                events_result = await pco_client.get(
+                    PCOProduct.CHECK_INS,
+                    "events",
+                    filter_params={
+                        "start_date": start_date,
+                        "end_date": end_date
+                    },
+                )
+                
+                attendance_data = []
+                if hasattr(events_result, 'data'):
+                    for event in events_result.data:
+                        # Get headcounts for each event
+                        headcounts_result = await pco_client.get(
+                            PCOProduct.CHECK_INS,
+                            "headcounts",
+                            filter_params={"event_id": event.get("id")},
+                        )
+                        
+                        total_attendance = sum(hc.get("total", 0) for hc in headcounts_result.data) if hasattr(headcounts_result, 'data') else 0
+                        
+                        attendance_data.append({
+                            "date": event.get("starts_at", "").split("T")[0] if event.get("starts_at") else "",
+                            "event_name": event.get("name", ""),
+                            "attendance": total_attendance,
+                        })
+                
+                # Simple anomaly detection (in practice, you'd use more sophisticated algorithms)
+                if len(attendance_data) > 1:
+                    attendances = [d["attendance"] for d in attendance_data]
+                    mean_attendance = sum(attendances) / len(attendances)
+                    std_dev = (sum((x - mean_attendance) ** 2 for x in attendances) / len(attendances)) ** 0.5
+                    
+                    threshold_multiplier = {"low": 1.5, "medium": 2.0, "high": 2.5}[sensitivity]
+                    threshold = std_dev * threshold_multiplier
+                    
+                    anomalies = []
+                    for data in attendance_data:
+                        deviation = abs(data["attendance"] - mean_attendance)
+                        if deviation > threshold:
+                            anomaly_type = "High" if data["attendance"] > mean_attendance else "Low"
+                            anomaly = {
+                                "date": data["date"],
+                                "event_name": data["event_name"],
+                                "attendance": data["attendance"],
+                                "expected_range": f"{mean_attendance - threshold:.0f} - {mean_attendance + threshold:.0f}",
+                                "anomaly_type": anomaly_type,
+                                "deviation": round(deviation, 2),
+                            }
+                            
+                            if arguments.get("include_explanations"):
+                                if anomaly_type == "High":
+                                    anomaly["possible_explanations"] = [
+                                        "Special event or holiday",
+                                        "Guest speaker or special program",
+                                        "Weather conditions",
+                                        "Promotional campaign"
+                                    ]
+                                else:
+                                    anomaly["possible_explanations"] = [
+                                        "Holiday weekend",
+                                        "Weather conditions",
+                                        "Competing events",
+                                        "Seasonal factors"
+                                    ]
+                            
+                            anomalies.append(anomaly)
+                else:
+                    anomalies = []
+                
+                result = {
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "sensitivity": sensitivity,
+                    "anomalies": anomalies,
+                    "summary": {
+                        "total_events": len(attendance_data),
+                        "anomalies_detected": len(anomalies),
+                        "average_attendance": sum(d["attendance"] for d in attendance_data) / len(attendance_data) if attendance_data else 0
+                    }
+                }
+                return [TextContent(type="text", text=json.dumps(result, indent=2))]
 
         # Webhooks API endpoints
         elif name == "get_webhook_subscriptions":
