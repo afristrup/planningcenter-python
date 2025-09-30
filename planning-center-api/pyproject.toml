@@ -9,6 +9,7 @@ dependencies = [
     "pydantic>=2.11.9",
     "typing-extensions>=4.15.0",
     "click>=8.0.0",
+    "python-dotenv>=1.1.1",
 ]
 
 [project.scripts]

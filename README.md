@@ -7,13 +7,13 @@ A comprehensive, modern Python wrapper for the Planning Center API using Pydanti
 - **Type-safe** with full Pydantic models for all data structures
 - **Async/await** support using httpx for modern Python patterns  
 - **Webhook native** with built-in signature verification and event handling
-- **All Products** supported: People, Services, Check-Ins, Giving, Groups, Calendar
+- **All Products** supported: People, Services, Check-Ins, Giving, Groups, Calendar, Publishing, Webhooks, Organization
 - **Auto-pagination** for seamless handling of large datasets
 - **Rate limiting** with automatic exponential backoff
 - **Comprehensive error handling** with specific exception types
 - **CLI tools** for common operations
 - **Utility functions** for data processing and analysis
-- **MCP Server** for AI assistant integration using FastAPI-MCP
+- **MCP Server** for AI assistant integration with 80+ tools including advanced analytics
 
 ## 📦 Installation
 
@@ -224,15 +224,16 @@ The repository includes a comprehensive Model Context Protocol (MCP) server that
 
 ### 🚀 Features
 
-- **Comprehensive Coverage**: 65+ read-only tools across 9 Planning Center products
+- **Comprehensive Coverage**: 80+ read-only tools across 9 Planning Center products
 - **Native MCP Integration**: Built using the official MCP protocol for seamless AI assistant integration
 - **Read-only operations** for data safety
 - **Mock server included** for testing without API credentials
 - **Claude Desktop ready** with pre-configured setup
 - **Advanced filtering** and pagination support
+- **Advanced Analytics**: 10+ specialized analytics tools for data-driven insights
 - **Event attendee filtering** for enhanced event management
 
-### 📋 Available MCP Tools (65+ tools)
+### 📋 Available MCP Tools (80+ tools)
 
 #### **People API** (15 tools)
 - `get_people`, `get_person`, `get_person_addresses`, `get_person_emails`, `get_person_phones`, `get_person_background_checks`, `get_field_definitions`, `get_forms`, `get_form`, `get_campuses`, `get_campus`

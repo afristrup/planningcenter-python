@@ -72,11 +72,56 @@ The real server now includes **80+ read-only tools** covering all major Planning
 - `get_calendar_events` - Get calendar events
 - `get_calendar_event` - Get specific calendar event
 
-### **Check-ins API** (4 tools)
+### **Check-ins API** (25+ tools)
+**Core Endpoints:**
 - `get_check_in_events` - Get check-in events
 - `get_check_in_event` - Get specific check-in event
 - `get_locations` - Get locations
 - `get_location` - Get specific location
+- `get_attendance_types` - Get attendance types
+- `get_attendance_type` - Get specific attendance type
+- `get_check_ins` - Get check-ins
+- `get_check_in` - Get specific check-in
+- `get_check_in_groups` - Get check-in groups
+- `get_check_in_group` - Get specific check-in group
+- `get_check_in_times` - Get check-in times
+- `get_check_in_time` - Get specific check-in time
+- `get_event_periods` - Get event periods
+- `get_event_period` - Get specific event period
+- `get_event_times` - Get event times
+- `get_event_time` - Get specific event time
+- `get_headcounts` - Get headcounts
+- `get_headcount` - Get specific headcount
+- `get_integration_links` - Get integration links
+- `get_integration_link` - Get specific integration link
+- `get_labels` - Get labels
+- `get_label` - Get specific label
+- `get_options` - Get options
+- `get_option` - Get specific option
+- `get_check_ins_organization` - Get organization
+- `get_passes` - Get passes
+- `get_pass` - Get specific pass
+- `get_check_ins_people` - Get people
+- `get_check_ins_person` - Get specific person
+- `get_person_events` - Get person events
+- `get_person_event` - Get specific person event
+- `get_stations` - Get stations
+- `get_station` - Get specific station
+- `get_themes` - Get themes
+- `get_theme` - Get specific theme
+
+**Advanced Analytics & Workflow Tools:**
+- `get_volunteer_count_for_date` - Get volunteer counts for specific dates
+- `get_attendance_summary_for_event` - Comprehensive event attendance analysis
+- `get_weekly_attendance_trends` - Attendance trends over time
+- `get_station_utilization_report` - Check-in station efficiency analysis
+- `get_family_check_in_patterns` - Family attendance analysis
+- `get_volunteer_availability_report` - Volunteer scheduling insights
+- `get_attendance_by_demographics` - Demographic breakdowns
+- `get_event_capacity_analysis` - Capacity utilization analysis
+- `get_check_in_efficiency_metrics` - Operational efficiency metrics
+- `get_volunteer_roster_for_date` - Complete volunteer rosters
+- `get_attendance_anomalies` - Unusual pattern detection
 
 ### **Publishing API** (4 tools)
 - `get_channels` - Get channels
@@ -141,6 +186,14 @@ The comprehensive mock server currently includes **14 tools** covering the most 
 - New `get_event_attendees` convenience tool
 - Proper data relationships in mock server
 
+### **Advanced Analytics & Workflow Tools**
+- **10+ specialized analytics tools** for data-driven insights
+- **Volunteer management** tools for scheduling and counting
+- **Attendance analytics** for trend analysis and demographics
+- **Operational insights** for efficiency and capacity analysis
+- **Family & community analysis** for understanding attendance patterns
+- **Anomaly detection** for identifying unusual patterns
+
 ## 🚀 **Usage Examples**
 
 ### **Get People with Filtering**
@@ -179,9 +232,45 @@ The comprehensive mock server currently includes **14 tools** covering the most 
 }
 ```
 
+### **Get Volunteer Count for Date**
+```json
+{
+  "tool": "get_volunteer_count_for_date",
+  "arguments": {
+    "date": "2024-01-14",
+    "include_details": true
+  }
+}
+```
+
+### **Get Weekly Attendance Trends**
+```json
+{
+  "tool": "get_weekly_attendance_trends",
+  "arguments": {
+    "start_date": "2024-01-01",
+    "end_date": "2024-01-31",
+    "group_by": "day",
+    "include_volunteers": true
+  }
+}
+```
+
+### **Get Station Utilization Report**
+```json
+{
+  "tool": "get_station_utilization_report",
+  "arguments": {
+    "start_date": "2024-01-01",
+    "end_date": "2024-01-31",
+    "include_peak_times": true
+  }
+}
+```
+
 ## 📊 **Coverage Statistics**
 
-- **Total Tools**: 65+ read-only tools
+- **Total Tools**: 80+ read-only tools
 - **API Products Covered**: 9 (People, Services, Registrations, Giving, Groups, Calendar, Check-ins, Publishing, Webhooks, Organization)
 - **Mock Server Tools**: 14 (covering most common use cases)
 - **Authentication**: Real server requires Planning Center credentials, mock server requires none

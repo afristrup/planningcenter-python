@@ -395,6 +395,7 @@ dependencies = [
     { name = "click" },
     { name = "httpx" },
     { name = "pydantic" },
+    { name = "python-dotenv" },
     { name = "typing-extensions" },
 ]
 
@@ -404,6 +405,7 @@ requires-dist = [
     { name = "fastapi", marker = "extra == 'examples'", specifier = ">=0.116.1" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "pydantic", specifier = ">=2.11.9" },
+    { name = "python-dotenv", specifier = ">=1.1.1" },
     { name = "python-multipart", marker = "extra == 'examples'", specifier = ">=0.0.20" },
     { name = "typing-extensions", specifier = ">=4.15.0" },
     { name = "uvicorn", marker = "extra == 'examples'", specifier = ">=0.35.0" },
@@ -431,6 +433,7 @@ dependencies = [
     { name = "fastapi-mcp" },
     { name = "mcp" },
     { name = "planning-center-api" },
+    { name = "python-dotenv" },
     { name = "python-multipart" },
     { name = "uvicorn" },
 ]
@@ -460,6 +463,7 @@ requires-dist = [
     { name = "planning-center-api", directory = "../planning-center-api" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.21.0" },
+    { name = "python-dotenv", specifier = ">=1.1.1" },
     { name = "python-multipart", specifier = ">=0.0.6" },
     { name = "uvicorn", specifier = ">=0.24.0" },
 ]

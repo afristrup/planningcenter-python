@@ -3,6 +3,8 @@
 from collections.abc import AsyncGenerator
 from typing import Any, TypeVar
 
+from dotenv import load_dotenv
+
 from .config import API_ENDPOINTS, PCOConfig, PCOProduct
 from .http_client import PCOHttpClient
 from .models.base import PCOCollection, PCOResource
@@ -41,6 +43,24 @@ class PCOClient:
             )
 
         self._http_client: PCOHttpClient | None = None
+
+    @classmethod
+    def from_env(cls) -> "PCOClient":
+        """Create a PCOClient instance from environment variables.
+
+        Loads configuration from environment variables using python-dotenv.
+        Expects the following environment variables:
+        - PCO_APP_ID: Planning Center application ID
+        - PCO_SECRET: Planning Center application secret
+        - PCO_ACCESS_TOKEN: OAuth access token (optional)
+        - PCO_WEBHOOK_SECRET: Webhook secret (optional)
+
+        Returns:
+            PCOClient instance configured from environment variables
+        """
+        load_dotenv()
+        config = PCOConfig.from_env()
+        return cls(config=config)
 
     async def __aenter__(self):
         """Async context manager entry."""

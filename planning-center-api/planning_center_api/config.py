@@ -66,6 +66,18 @@ class PCOConfig:
         credentials = f"{self.app_id}:{self.secret}"
         return base64.b64encode(credentials.encode()).decode()
 
+    @classmethod
+    def from_env(cls) -> "PCOConfig":
+        """Create configuration from environment variables."""
+        import os
+
+        return cls(
+            app_id=os.getenv("PCO_APP_ID"),
+            secret=os.getenv("PCO_SECRET"),
+            access_token=os.getenv("PCO_ACCESS_TOKEN"),
+            webhook_secret=os.getenv("PCO_WEBHOOK_SECRET"),
+        )
+
 
 # API Endpoints Configuration
 API_ENDPOINTS = {

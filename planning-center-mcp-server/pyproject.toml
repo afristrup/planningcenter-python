@@ -15,6 +15,7 @@ dependencies = [
     "python-multipart>=0.0.6",
     "mcp>=1.0.0",
     "planning-center-api @ file:///C:/Users/aksel/Documents/GitHub/planningcenter-wrapper/planning-center-api",
+    "python-dotenv>=1.1.1",
 ]
 
 [tool.hatch.build.targets.wheel]
